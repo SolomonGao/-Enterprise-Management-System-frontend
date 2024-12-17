@@ -32,7 +32,7 @@ const ProductSteps: FC<Props> = (props: Props) => {
                     {/* 连接线 */}
                     {index !== steps.length - 1 && (
                         <div
-                            className={`h-1 mr-1 w-[30px] ${props.active + 1 > index ? "bg-blue-500" : "bg-[#384766]"
+                            className={`h-1 mr-1 w-[30px] ${props.active > index ? "bg-blue-500" : "bg-[#384766]"
                                 }`}
                         />
                     )}

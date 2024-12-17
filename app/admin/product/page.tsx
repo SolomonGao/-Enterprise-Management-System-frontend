@@ -34,7 +34,7 @@ const page = (props: Props) => {
                 title="产品管理"
               />
             </div>
-            <div className='ml-10'>
+            <div className='ml-10 min-h-screen'>
               <Product
               />
             </div>

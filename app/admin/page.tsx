@@ -21,7 +21,7 @@ const adminPage: FC<Props> = (props: Props) => {
           <div className='1500px:w-[16%] w-1/5 flex'>
             <AdminSidebar
             />
-            <div className='w-[85%]'>
+            <div className='w-[85%] min-h-screen'>
               <DashboardHero />
             </div>
           </div>

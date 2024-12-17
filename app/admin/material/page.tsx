@@ -34,7 +34,7 @@ const page = (props: Props) => {
                 title="零配件管理"
               />
             </div>
-            <div className='ml-10'>
+            <div className='ml-10 min-h-screen'>
               <Material
               />
             </div>

@@ -77,11 +77,13 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
     if (isSuccess) {
       toast.success('分类添加成功');
       setAdded(true);
+      setLoading(false);
     }
 
     if (error) {
       console.log(error);
       toast.error("添加失败");
+      setLoading(false);
     }
   }, [isSuccess, error])
 
@@ -95,11 +97,13 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
 
       if (selectedCategory === "") {
         toast.error('必须选择一个原料类型');
+        setLoading(false);
         return
       }
 
       if (!materialDetails.name || !materialDetails.drawing_no_id || Number.isNaN(materialDetails.counts)) {
         toast.error('名称，型号和数量是必填项');
+        setLoading(false);
         return;
         // if (!materialDetails.counts)
       }
@@ -266,7 +270,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
                     }}
                   />
                 ))}
-                <ImageUpload onImageUpload={(file, fileType) => setSelectedImage({ file, fileType })} />
+                <ImageUpload onImageUpload={(file, fileType) => setSelectedImage({ file, fileType })} small={true} selectedImage={selectedImage} />
               </>
             )}
 

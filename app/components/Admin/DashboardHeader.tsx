@@ -10,22 +10,22 @@ const DashboardHeader = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 80) {
-        setActive(true);
-      } else {
-        setActive(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (window.scrollY > 80) {
+  //       setActive(true);
+  //     } else {
+  //       setActive(false);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
+  //   window.addEventListener("scroll", handleScroll);
 
-    // 清理事件监听器，防止内存泄漏
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []); // 空依赖数组，确保只在组件挂载和卸载时执行
+  //   // 清理事件监听器，防止内存泄漏
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []); // 空依赖数组，确保只在组件挂载和卸载时执行
 
 
   const notifications = [
@@ -40,7 +40,7 @@ const DashboardHeader = (props: Props) => {
       }`}>
       <div className='w-full m-auto py-2 h-full'>
         <div className='w-full h-[80px] flex items-center justify-between p-3'>
-          <div className="ml-4 text-[30px] font-Poppins font-[500] text-black dark:text-white">
+          <div className="ml-6 text-[30px] font-Poppins font-[500] text-black dark:text-white">
             {props.title}
           </div>
           <div className="absolute right-10 cursor-pointer m-5">

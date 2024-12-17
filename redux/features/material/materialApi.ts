@@ -62,7 +62,7 @@ export const materialApi = apiSlice.injectEndpoints({
                 return {
                     url: `/leaf/get-materials-by-root?${params.toString()}`,
                     method: "GET",
-                    credentials: 'include' as const
+                    credentials: 'include' as const,
                 };
             }
         }),

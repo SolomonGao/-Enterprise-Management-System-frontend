@@ -1,12 +1,10 @@
 'use client';
-
 import RequireRole from '@/app/hooks/RequireRole';
 import { useGetAllUsersQuery, useUpdateUserRoleMutation } from '@/redux/features/user/userApi';
 import React, { FC, useEffect, useState } from 'react';
 import Pagination from '../Pagination/Pagination';
 import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
-import { userAgent } from 'next/server';
+import { style } from '@/app/styles/style';
 
 type Props = {
     active: number;
@@ -38,25 +36,26 @@ const RoleManager: FC<Props> = (props: Props) => {
     }, [props.active]);
 
     return (
+        <RequireRole allowedRoles={"管理"}>
             <div className="px-4 py-6">
                 {/* 用户列表 */}
                 <div className="overflow-x-auto shadow-lg border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600">
                     <table className="min-w-full text-sm text-gray-700 dark:text-gray-300">
                         <thead className="bg-gray-200 dark:bg-gray-700">
                             <tr>
-                                <th className="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">姓名</th>
-                                <th className="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">邮箱</th>
-                                <th className="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">职位</th>
-                                <th className="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">更改职位</th>
+                                <th className={style.tableHead}>姓名</th>
+                                <th className={style.tableHead}>邮箱</th>
+                                <th className={style.tableHead}>职位</th>
+                                <th className={style.tableHead}>更改职位</th>
                             </tr>
                         </thead>
                         <tbody>
                             {data?.data?.map((user: any) => (
                                 <tr key={user._id} className="border-t hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td className="px-6 py-3">{user.name}</td>
-                                    <td className="px-6 py-3">{user.email}</td>
-                                    <td className="px-6 py-3">{user.role}</td>
-                                    <td className="px-6 py-3">
+                                    <td className="px-6 py-3 border border-black dark:border-white">{user.name}</td>
+                                    <td className="px-6 py-3 border border-black dark:border-white">{user.email}</td>
+                                    <td className="px-6 py-3 border border-black dark:border-white">{user.role}</td>
+                                    <td className="px-6 py-3 border border-black dark:border-white">
                                         <select
                                             value={user.role}
                                             onChange={(e) => handleRoleChange(user._id, e.target.value, user.name)}
@@ -91,6 +90,7 @@ const RoleManager: FC<Props> = (props: Props) => {
                     onPageChange={handlePageChange} // 页码改变回调
                 />
             </div>
+        </RequireRole>
     );
 };
 
