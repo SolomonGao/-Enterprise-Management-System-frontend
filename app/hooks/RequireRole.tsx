@@ -12,6 +12,14 @@ const RequireRole: React.FC<Props> = ({ allowedRoles, children }) => {
   const { user } = useSelector((state: any) => state.auth);
   const isAllowed = allowedRoles.includes(user.role);
 
+  let rolesString = "";
+
+  if (allowedRoles.length > 1) {
+    rolesString = allowedRoles.join(", ");
+  } else {
+    rolesString = allowedRoles[0];
+  }
+
   if (isAllowed) {
     return children;
   }
@@ -25,7 +33,7 @@ const RequireRole: React.FC<Props> = ({ allowedRoles, children }) => {
         <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
           该功能需要您的职位为：{" "}
           <span className="text-gray-900 dark:text-gray-200">
-            {allowedRoles.join(", ")}
+            {rolesString}
           </span>
         </p>
         <button

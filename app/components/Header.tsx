@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import Image from "next/image";
 import avatar from "../../public/avatar.png";
 import ResetPassword from "./Auth/ResetPassword";
+import SignUp from "./Auth/SignUp";
 
 type Props = {
     open: boolean;
@@ -231,6 +232,23 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
 
 
                                 </CustomModal>
+                            )
+                        }
+                    </>
+                )
+            }
+            {
+                route === "SignUp" && (
+                    <>
+                        {
+                            open && (
+                                <CustomModal
+                                    open={open}
+                                    setOpen={setOpen}
+                                    setRoute={setRoute}
+                                    activeItem={activeItem}
+                                    component={SignUp}
+                                />
                             )
                         }
                     </>

@@ -36,7 +36,7 @@ const RoleManager: FC<Props> = (props: Props) => {
     }, [props.active]);
 
     return (
-        <RequireRole allowedRoles={"管理"}>
+        <RequireRole allowedRoles={["管理"]}>
             <div className="px-4 py-6">
                 {/* 用户列表 */}
                 <div className="overflow-x-auto shadow-lg border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600">

@@ -4,14 +4,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { style } from "../../styles/style";
-import {useRegisterMutation} from "../../../redux/features/auth/authApi"
+import { useRegisterMutation } from "../../../redux/features/auth/authApi"
 import toast from "react-hot-toast";
-import RequireRole from "@/app/hooks/RequireRole";
 import Verification from "./Verfication";
 
 type Props = {
-    active: number;
-    user: any
+    setRoute: (route: string) => void;
+    setOpen: (open: boolean) => void;
 }
 
 const schema = Yup.object().shape({
@@ -23,14 +22,14 @@ const schema = Yup.object().shape({
 
 const SignUp: FC<Props> = (props: Props) => {
     const [show, setShow] = useState(false)
-    const [register, {data, error, isSuccess}] = useRegisterMutation();
+    const [register, { data, error, isSuccess }] = useRegisterMutation();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false)
-    
+
 
     useEffect(() => {
         if (isSuccess) {
-            const message = data.message ||"注册成功";
+            const message = data.message || "注册成功";
             toast.success(message);
             setIsSubmitting(false);
             setSubmitted(true);
@@ -62,111 +61,115 @@ const SignUp: FC<Props> = (props: Props) => {
 
     const { errors, touched, values, handleChange, handleSubmit } = formik;
     return (
-        <RequireRole allowedRoles={['管理']}>
+        <div>
             {!submitted && (
-                <div className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-                <h1 className={`${style.title}`}>
-                    账号创建
-                </h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
+                <div className="w-full">
+                    <h1 className={`${style.title}`}>
+                        账号创建
+                    </h1>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label
+                                className={`${style.label}`}
+                                htmlFor="name">
+                                请输入您的姓名
+                            </label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={values.name}
+                                onChange={handleChange}
+                                id="name"
+                                placeholder="JohnDoe"
+                                className={`${errors.name && touched.name && "border-red-500"}
+                ${style.input}`}
+                            />
+                            { }
+                            {errors.name && touched.name && (
+                                <span className="text-red-500 pt-2 block">{errors.name}</span>
+                            )}
+                        </div>
                         <label
                             className={`${style.label}`}
-                            htmlFor="name">
-                            请输入您的姓名
+                            htmlFor="email">
+                            请输入你的邮箱
                         </label>
                         <input
-                            type="text"
-                            name="name"
-                            value={values.name}
+                            type="email"
+                            name="email"
+                            value={values.email}
                             onChange={handleChange}
-                            id="name"
-                            placeholder="JohnDoe"
-                            className={`${errors.name && touched.name && "border-red-500"}
+                            id="email"
+                            placeholder="loginmail"
+                            className={`${errors.email && touched.email && "border-red-500"}
                 ${style.input}`}
                         />
-                        {}
-                        {errors.name && touched.name && (
-                            <span className="text-red-500 pt-2 block">{errors.name}</span>
+                        {errors.email && touched.email && (
+                            <span className="text-red-500 pt-2 block">{errors.email}</span>
                         )}
-                    </div>
-                    <label
-                        className={`${style.label}`}
-                        htmlFor="email">
-                        请输入你的邮箱
-                    </label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={values.email}
-                        onChange={handleChange}
-                        id="email"
-                        placeholder="loginmail"
-                        className={`${errors.email && touched.email && "border-red-500"}
-                ${style.input}`}
-                    />
-                    {errors.email && touched.email && (
-                        <span className="text-red-500 pt-2 block">{errors.email}</span>
-                    )}
-                    <div className="w-full mt-5 relative mb-1">
-                        <label
-                            className={`${style.label}`}
-                            htmlFor="password">
-                            请输入你的密码
-                        </label>
-                        <input
-                            type={!show ? "password" : "text"}
-                            name="password"
-                            value={values.password}
-                            onChange={handleChange}
-                            id="password"
-                            placeholder="password!@%"
-                            className={`${errors.password && touched.password && "border-red-500"} ${style.input}`}
-                        />
-                        {!show ? (
-                            <AiOutlineEyeInvisible
-                                className="absolute bottom-3 right-2 z-1 cursor-pointer"
-                                size={20}
-                                onClick={() => setShow(true)} />
-                        ) : (
-                            <AiOutlineEye
-                                className="absolute bottom-3 right-2 z-1 cursor-pointer"
-                                size={20}
-                                onClick={() => setShow(false)} />
-                        )}
-    
-                        
-                    </div>
-    
-                    {errors.password && touched.password && (
+                        <div className="w-full mt-5 relative mb-1">
+                            <label
+                                className={`${style.label}`}
+                                htmlFor="password">
+                                请输入你的密码
+                            </label>
+                            <input
+                                type={!show ? "password" : "text"}
+                                name="password"
+                                value={values.password}
+                                onChange={handleChange}
+                                id="password"
+                                placeholder="password!@%"
+                                className={`${errors.password && touched.password && "border-red-500"} ${style.input}`}
+                            />
+                            {!show ? (
+                                <AiOutlineEyeInvisible
+                                    className="absolute bottom-3 right-2 z-1 cursor-pointer"
+                                    size={20}
+                                    onClick={() => setShow(true)} />
+                            ) : (
+                                <AiOutlineEye
+                                    className="absolute bottom-3 right-2 z-1 cursor-pointer"
+                                    size={20}
+                                    onClick={() => setShow(false)} />
+                            )}
+
+
+                        </div>
+
+                        {errors.password && touched.password && (
                             <span className="text-red-500 pt-2 block">{errors.password}</span>
                         )}
-                    <div>
-                        <div className="w-full mt-5">
-                            <input
-                                type="submit"
-                                value={isSubmitting ? "注册中..." : "注册"}
-                                className={`${style.button} ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
-                                disabled={isSubmitting}
-                            />
+                        <div>
+                            <div className="w-full mt-5">
+                                <input
+                                    type="submit"
+                                    value={isSubmitting ? "注册中..." : "注册"}
+                                    className={`${style.button} ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    disabled={isSubmitting}
+                                />
+                            </div>
+                            <br />
+                            <h5 className="text-center pt-4 font-Poppins text-[14px] text-black dark:text-white">
+
+                                <span className="text-[#2190ff] pl-1 cursor-pointer" onClick={() => props.setRoute("Login")}> 登录</span>
+                            </h5>
                         </div>
-                        <br />
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
             )}
-        {submitted && (
-            <div>
-                <div className='w-full h-full bg-transparent'>
+            {submitted && (
+                <div>
+                    <div className='w-full h-full bg-transparent'>
                         <Verification
-                        submitted={submitted}
-                        setSubmitted={setSubmitted}
+                            submitted={submitted}
+                            setSubmitted={setSubmitted}
                         />
                     </div>
-                
-            </div>
-        )}
-        </RequireRole>
+
+                </div>
+            )}
+        </div>
     )
 }
 

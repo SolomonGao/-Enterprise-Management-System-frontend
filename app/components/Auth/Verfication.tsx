@@ -82,7 +82,7 @@ const Verification: FC<Props> = (props: Props) => {
 
 
     return (
-        <div className='w-full max-w-md mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg'>
+        <div className='w-full'>
             <h1 className={`${style.title}`}>
                 验证你的邮箱
             </h1>

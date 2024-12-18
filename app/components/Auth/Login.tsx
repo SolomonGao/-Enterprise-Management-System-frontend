@@ -122,6 +122,7 @@ const Login: FC<Props> = (props: Props) => {
                     <h5 className="text-center pt-4 font-Poppins text-[14px] text-black dark:text-white">
 
                         <span className="text-[#2190ff] pl-1 cursor-pointer" onClick={() => props.setRoute("Reset-Password")}> 忘记密码？</span>
+                        <span className="text-[#2190ff] pl-1 cursor-pointer" onClick={() => props.setRoute("SignUp")}> 注册</span>
                     </h5>
                 </div>
             </form>
