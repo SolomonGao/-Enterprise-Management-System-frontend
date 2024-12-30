@@ -1,9 +1,8 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
-import Dropdown from '../Material/Dropdown'
-import SearchBar from '../Material/SearchBar'
-import MaterialSelectedCatelogy from '../Material/MaterialSelectedCatelogy'
+import SearchBar from '../Product/SearchBar'
 import { Typography } from '@mui/material'
-import { useGetAllRootQuery, useGetMaterialsByRootQuery } from '@/redux/features/material/materialApi'
+import ProductSelectedCatelogy from '../Product/ProductSelectedCatelogy';
+import { useGetProductsQuery } from '@/redux/features/product/productApi';
 import { debounce } from 'lodash'
 import Pagination from "../../../Pagination/Pagination";
 
@@ -13,40 +12,34 @@ type UsedMaterial = {
 };
 
 type Props = {
-    selectedMaterialsId: UsedMaterial[];
-    setSelectedMaterialsId: (selectedMaterialsId: UsedMaterial[] | ((prev: UsedMaterial[]) => UsedMaterial[])) => void;
+    selectedProductsId: UsedMaterial[];
+    setselectedProductsId: (selectedProductsId: UsedMaterial[] | ((prev: UsedMaterial[]) => UsedMaterial[])) => void;
     preButton: () => void;
     nextButton: () => void;
 }
 
-const MaterialSelect: FC<Props> = (props: Props) => {
+const ProductSelect: FC<Props> = (props: Props) => {
     const [added, setAdded] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<string>("");
     const [filters, setFilters] = useState<{ searchBy: string; search?: string; countsRange?: string }>({
         searchBy: "name",
     });
     const [currentPage, setCurrentPage] = useState(1);
 
 
-
-    // 获取分类数据
-    const { data, error, isLoading, refetch: refetchRoot } = useGetAllRootQuery({});
-
     // 获取过滤后的原料数据，并添加分页参数
-    const { data: filteredData, refetch, isLoading: isFetching } = useGetMaterialsByRootQuery({
-        category: selectedCategory,
+    const { data: filteredData, refetch, isLoading: isFetching } = useGetProductsQuery({
         terms: filters,
         page: currentPage,
+        limit: 5
     });
 
     useEffect(() => {
         if (added === true) {
             setAdded(false);
             refetch();
-            refetchRoot();
         }
 
-    }, [added, refetch, refetchRoot])
+    }, [added, refetch])
 
 
     // 使用防抖函数包装搜索操作
@@ -74,22 +67,11 @@ const MaterialSelect: FC<Props> = (props: Props) => {
                     <SearchBar onSearch={handleFilters} />
                 </div>
 
-                {/* 分类下拉菜单 */}
                 <div className="mt-5">
-                    <Dropdown
-                        options={Array.isArray(data?.data) ? data.data.map(item => item) : []}
-                        value={selectedCategory}
-                        onChange={setSelectedCategory}
-                        disableAll={false}
-                    />
-                </div>
-
-                {/* 显示原料信息 */}
-                <div className="mt-5">
-                    <MaterialSelectedCatelogy
-                        materials={filteredData?.data || []}
-                        selectedMaterialsId={props.selectedMaterialsId}
-                        setSelectedMaterialsId={props.setSelectedMaterialsId} />
+                    <ProductSelectedCatelogy
+                        products={filteredData?.data || []}
+                        selectedProductsId={props.selectedProductsId}
+                        setselectedProductsId={props.setselectedProductsId} />
                 </div>
                 {filteredData?.totalPages > 0 && (
                     <div className="mt-5">
@@ -123,4 +105,4 @@ const MaterialSelect: FC<Props> = (props: Props) => {
     )
 }
 
-export default MaterialSelect
+export default ProductSelect

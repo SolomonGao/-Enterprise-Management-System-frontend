@@ -3,7 +3,6 @@ import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import { useGetMaterialsByProductQuery } from "@/redux/features/product/productApi";
 
-import { debounce } from "lodash";
 import Pagination from "@/app/components/Pagination/Pagination";
 
 type Product = {
@@ -27,9 +26,9 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data, isSuccess, refetch } = useGetMaterialsByProductQuery({
-    idProduct: selectedProduct?.idproduct || "", 
+    idProduct: selectedProduct?.idproduct || "",
     page: currentPage,
-  });
+  }, { skip: !selectedProduct?.idproduct });
 
 
 
@@ -50,15 +49,10 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
     // 你可以在这里设置更多的操作，例如导航到详情页面等
     console.log("查看详情:", product);
   };
-  
-    // 防抖翻页
-    const handlePageChange = useCallback(
-      debounce((page: number) => {
-        setCurrentPage(page);
-        refetch();
-      }, 300),
-      [refetch]
-    );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
 
   return (
@@ -142,7 +136,7 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
       {/* 产品详情模态框 */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-lg w-full overflow-auto shadow-xl">
+          <div className="bg-white p-8 rounded-lg max-w-lg w-full max-h-[90vh] overflow-auto shadow-xl relative">
             <button
               onClick={() => setSelectedProduct(null)}
               className="absolute top-4 right-4 text-white text-xl bg-black bg-opacity-50 p-2 rounded-full"
@@ -158,7 +152,7 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
             {isSuccess && data && (
               <div className="mt-6">
                 <h4 className="text-xl font-semibold text-gray-800">相关材料</h4>
-                <div className="overflow-x-auto mt-4">
+                <div className="mt-4 overflow-x-auto"> {/* 添加水平滚动 */}
                   <table className="min-w-full table-auto border-separate border-spacing-2 border border-gray-300 rounded-lg">
                     <thead className="bg-gray-100 text-left">
                       <tr>
@@ -179,17 +173,17 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
                       ))}
                     </tbody>
                   </table>
-                  {/* 分页组件 */}
-                  {data?.totalPages > 0 && (
-                    <div className="mt-5">
-                      <Pagination
-                        totalPages={data.totalPages}
-                        currentPage={currentPage}
-                        onPageChange={handlePageChange}
-                      />
-                    </div>
-                  )}
                 </div>
+                {/* 分页组件 */}
+                {data?.totalPages > 0 && (
+                  <div className="mt-5">
+                    <Pagination
+                      totalPages={data.totalPages}
+                      currentPage={currentPage}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
