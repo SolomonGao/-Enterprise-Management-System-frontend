@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 type Material = {
   model_name: string;
