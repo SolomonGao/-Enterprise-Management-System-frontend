@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import React, { FC, useCallback } from 'react'
 import SearchBar from './SearchBar';
 import Pagination from '@/app/components/Pagination/Pagination';
-import OrderTable from './OrderTable';
+import OrderTable from './OrderTable/OrderTable';
 
 type Props = {
     filteredData: any;
@@ -52,7 +52,7 @@ const OrderHero: FC<Props> = ({
                 </div>
 
                 <div className="mt-5">
-                    <OrderTable orders={filteredData?.data || []} />
+                    <OrderTable orders={filteredData?.data || []} refetch={refetch} />
                 </div>
 
                 {/* 分页组件 */}

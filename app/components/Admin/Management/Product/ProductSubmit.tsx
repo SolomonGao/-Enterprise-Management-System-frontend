@@ -49,11 +49,11 @@ const ProductSubmit: FC<Props> = (props: Props) => {
         }, [linkSuccess, linkError]);
 
     const handleAdd = async () => {
-        addProduct({ productInfo: props.productInfo, selectedImage: props.selectedImage });
+        addProduct({ productInfo: props.productInfo, selectedImage: props.selectedImage }).unwrap();
     }
 
     const handleAdd2 = async () => {
-        productToMaterial({ idProduct: props.productInfo.idProduct, selectedMaterialsId: props.selectedMaterialsId });
+        productToMaterial({ idProduct: props.productInfo.idProduct, selectedMaterialsId: props.selectedMaterialsId }).unwrap();
     }
     return (
         <div className='w-[90%] m-auto'>

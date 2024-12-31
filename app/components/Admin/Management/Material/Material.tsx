@@ -5,6 +5,7 @@ import { useGetAllRootQuery, useGetMaterialsByRootQuery } from "@/redux/features
 import HeaderBar from "./HeadBarMaterial";
 import { Typography } from "@mui/material";
 import MaterialHero from "./MaterialHero";
+import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -18,14 +19,36 @@ const Material = (props: Props) => {
   const [active, setActive] = useState(1);
 
   // 获取分类数据
-  const { data, error, isLoading, refetch: refetchRoot } = useGetAllRootQuery({});
+  const { data, error, refetch: refetchRoot } = useGetAllRootQuery({});
 
   // 获取过滤后的原料数据，并添加分页参数
-  const { data: filteredData, refetch, isLoading: isFetching } = useGetMaterialsByRootQuery({
+  const { data: filteredData, refetch, isLoading: isFetching, error: leafError } = useGetMaterialsByRootQuery({
     category: selectedCategory,
     terms: filters,
     page: currentPage,
   });
+
+  useEffect(() => {
+    if (error) {
+        if ("data" in error) {
+            const errorData = error as any;
+            toast.error(errorData.data.message);
+        } else {
+            console.log('An error occured: ', error);
+        }
+    }
+}, [error]);
+
+useEffect(() => {
+  if (leafError) {
+      if ("data" in leafError) {
+          const errorData = leafError as any;
+          toast.error(errorData.data.message);
+      } else {
+          console.log('An error occured: ', leafError);
+      }
+  }
+}, [leafError]);
 
   useEffect(() => {
     if (added === true) {

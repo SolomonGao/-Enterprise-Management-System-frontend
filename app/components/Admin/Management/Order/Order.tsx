@@ -2,8 +2,9 @@
 import React, { FC, useEffect, useState } from 'react'
 import HeaderBar from './HeadBarOrder';
 import OrderHero from './OrderHero';
-import { useGetProductsQuery } from '@/redux/features/product/productApi';
 import CreateOrder from './CreateOrder';
+import { useGetOrdersQuery } from '@/redux/features/order/orderApi';
+import toast from 'react-hot-toast';
 
 type Props = {}
 
@@ -12,17 +13,29 @@ const Order: FC<Props> = (props: Props) => {
   const [added, setAdded] = useState(false);
   const [active, setActive] = useState(1);
   const [filters, setFilters] = useState<{ searchBy: string; search?: string; }>({
-    searchBy: "idproduct",
+    searchBy: "customer",
   });
 
   const [currentPage, setCurrentPage] = useState(1);
 
 
-  const { data: filteredData, isLoading, error, refetch, isLoading: isFetching } = useGetProductsQuery({
+  const { data: filteredData, isLoading, error, refetch, isLoading: isFetching } = useGetOrdersQuery({
     page: currentPage,
     terms: filters,
     limit: 10,
   });
+
+  useEffect(() => {
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
+      } else {
+        console.log('An error occured: ', error);
+      }
+    }
+  }, [error]);
+
 
   useEffect(() => {
     if (added === true) {

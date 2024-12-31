@@ -1,9 +1,8 @@
-// components/ProductCatalog.tsx
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useGetMaterialsByProductQuery } from "@/redux/features/product/productApi";
-
 import Pagination from "@/app/components/Pagination/Pagination";
+import toast from "react-hot-toast";
 
 type Product = {
   idproduct: string;
@@ -22,15 +21,27 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
   const [currentPage, setCurrentPage] = useState(1);
+  const [isProductLoading, setIsProductLoading] = useState(false); // 新增 loading 状态
 
-  const { data, isSuccess, refetch } = useGetMaterialsByProductQuery({
-    idProduct: selectedProduct?.idproduct || "",
-    page: currentPage,
-  }, { skip: !selectedProduct?.idproduct });
+  const { data, isSuccess, error } = useGetMaterialsByProductQuery(
+    {
+      idProduct: selectedProduct?.idproduct || "",
+      page: currentPage,
+    },
+    { skip: !selectedProduct?.idproduct }
+  );
 
-
+  useEffect(() => {
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
+      } else {
+        console.log("An error occured: ", error);
+      }
+    }
+  }, [error]);
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) =>
@@ -44,16 +55,23 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
   };
 
   const viewProductDetails = (product: Product) => {
-    setSelectedProduct(product);
-    // 在这里可以打开一个模态框显示产品详情
-    // 你可以在这里设置更多的操作，例如导航到详情页面等
-    console.log("查看详情:", product);
+    setSelectedProduct(null); // 重置 selectedProduct
+    setIsProductLoading(true); // 设置加载状态为 true
+    setCurrentPage(1);
+    setSelectedProduct(product); // 设置当前选中的产品
+
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
+  // 确保在数据加载完成前，不渲染原材料信息
+  useEffect(() => {
+    if (isSuccess && data) {
+      setIsProductLoading(false); // 数据加载完成，取消加载状态
+    }
+  }, [isSuccess, data]);
 
   return (
     <div>
@@ -133,42 +151,47 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
           </div>
         ))}
       </div>
+
       {/* 产品详情模态框 */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-lg w-full max-h-[90vh] overflow-auto shadow-xl relative">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-lg w-full max-h-[90vh] overflow-auto shadow-xl relative">
             <button
               onClick={() => setSelectedProduct(null)}
               className="absolute top-4 right-4 text-white text-xl bg-black bg-opacity-50 p-2 rounded-full"
             >
               ✕
             </button>
-            <h3 className="text-2xl font-semibold text-gray-800">{selectedProduct.model_name}</h3>
-            <p className="text-gray-600">泵型号: {selectedProduct.pump_model}</p>
-            <p className="text-gray-600">制造商: {selectedProduct.manufacturer}</p>
-            <p className="text-gray-600">图号ID: {selectedProduct.drawing_no_id}</p>
+            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white">
+              {selectedProduct.model_name}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">泵型号: {selectedProduct.pump_model}</p>
+            <p className="text-gray-600 dark:text-gray-300">制造商: {selectedProduct.manufacturer}</p>
+            <p className="text-gray-600 dark:text-gray-300">图号ID: {selectedProduct.drawing_no_id}</p>
 
             {/* 相关材料表格 */}
-            {isSuccess && data && (
+            {isProductLoading ? (
+              <div className="text-black dark:text-white">加载中...</div>
+            ) : isSuccess && data && (
               <div className="mt-6">
-                <h4 className="text-xl font-semibold text-gray-800">相关材料</h4>
+                <h4 className="text-xl font-semibold text-gray-800 dark:text-white">相关材料</h4>
                 <div className="mt-4 overflow-x-auto"> {/* 添加水平滚动 */}
-                  <table className="min-w-full table-auto border-separate border-spacing-2 border border-gray-300 rounded-lg">
-                    <thead className="bg-gray-100 text-left">
+                  <table className="min-w-full table-auto border-separate border-spacing-2 border border-gray-300 dark:border-gray-600 rounded-lg">
+                    <thead className="bg-gray-100 dark:bg-gray-700 text-left">
                       <tr>
-                        <th className="px-4 py-2 text-gray-800 font-medium">零配件名称</th>
-                        <th className="px-4 py-2 text-gray-800 font-medium">零配件图号</th>
-                        <th className="px-4 py-2 text-gray-800 font-medium">需要数量</th>
-                        <th className="px-4 py-2 text-gray-800 font-medium">剩余数量</th>
+                        <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">零配件名称</th>
+                        <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">零配件图号</th>
+                        <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">需要数量</th>
+                        <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">剩余数量</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.data.map((material: any) => (
-                        <tr key={material.leaf_materials_drawing_no} className="border-t border-gray-200 hover:bg-gray-50">
-                          <td className="px-4 py-2 text-gray-700">{material.leafMaterial.name}</td>
-                          <td className="px-4 py-2 text-gray-700">{material.leaf_materials_drawing_no}</td>
-                          <td className="px-4 py-2 text-gray-700">{material.material_counts}</td>
-                          <td className="px-4 py-2 text-gray-700">{material.leafMaterial.counts}</td>
+                        <tr key={material.leaf_materials_drawing_no} className="border-t border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                          <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leafMaterial.name}</td>
+                          <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leaf_materials_drawing_no}</td>
+                          <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.material_counts}</td>
+                          <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leafMaterial.counts}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -189,8 +212,6 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
           </div>
         </div>
       )}
-
-
     </div>
   );
 };

@@ -4,11 +4,11 @@ import { TextField, MenuItem, Button, Grid } from "@mui/material";
 import { useTheme } from "next-themes";
 
 const columnOptions = [
-  { label: "产品ID", value: "idproduct" },
-  { label: "产品名", value: "model_name" },
-  { label: "创建时间", value: "created_at" },
-  { label: "修改时间", value: "updated_at" },
+  { label: "客户姓名", value: "customer" },
+  { label: "手机号码", value: "phoneNumber" },
+  { label: "创建日期", value: "createdAt" },
   { label: "截止时间", value: "deadline" },
+  { label: "地址", value: "address" },
   { label: "订单状态", value: "status" },
 ];
 
@@ -23,7 +23,7 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const { theme } = useTheme();
-  const [selectedColumn, setSelectedColumn] = useState("idproduct");
+  const [selectedColumn, setSelectedColumn] = useState("customer");
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
@@ -32,7 +32,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   const handleReset = () => {
-    setSelectedColumn("model_name");
+    setSelectedColumn("customer");
     setSearchTerm("");
   };
 

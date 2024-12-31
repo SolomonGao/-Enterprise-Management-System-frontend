@@ -4,6 +4,7 @@ import HeaderBar from './HeadBarProduct';
 import CreateProoduct from '../Product/CreateProduct'
 import ProductHero from './ProductHero'
 import { useGetProductsQuery } from '@/redux/features/product/productApi';
+import toast from 'react-hot-toast';
 
 type Props = {}
 
@@ -17,11 +18,22 @@ const Product = (props: Props) => {
     const [currentPage, setCurrentPage] = useState(1);
 
 
-    const { data: filteredData, isLoading, error, refetch, isLoading: isFetching } = useGetProductsQuery({
+    const { data: filteredData, isSuccess, error, refetch, isLoading: isFetching } = useGetProductsQuery({
         page: currentPage,
         terms: filters,
         limit: 10,
     });
+
+    useEffect(() => {
+        if (error) {
+            if ("data" in error) {
+                const errorData = error as any;
+                toast.error(errorData.data.message);
+            } else {
+                console.log('An error occured: ', error);
+            }
+        }
+    }, [error]);
 
     useEffect(() => {
         if (added === true) {
@@ -34,9 +46,6 @@ const Product = (props: Props) => {
 
         }
     }, [refetch])
-
-
-
 
     return (
         <div>

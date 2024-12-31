@@ -6,14 +6,14 @@ import { useGetProductsQuery } from '@/redux/features/product/productApi';
 import { debounce } from 'lodash'
 import Pagination from "../../../Pagination/Pagination";
 
-type UsedMaterial = {
+type UsedProducts = {
     id: string;
     quantity: number;
 };
 
 type Props = {
-    selectedProductsId: UsedMaterial[];
-    setselectedProductsId: (selectedProductsId: UsedMaterial[] | ((prev: UsedMaterial[]) => UsedMaterial[])) => void;
+    selectedProductsId: UsedProducts[];
+    setselectedProductsId: (selectedProductsId: UsedProducts[] | ((prev: UsedProducts[]) => UsedProducts[])) => void;
     preButton: () => void;
     nextButton: () => void;
 }

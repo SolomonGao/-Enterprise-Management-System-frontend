@@ -31,7 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   const handleReset = () => {
-    setSelectedColumn("model_name");
+    setSelectedColumn("idproduct");
     setSearchTerm("");
   };
 

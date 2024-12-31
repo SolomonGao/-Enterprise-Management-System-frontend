@@ -1,8 +1,9 @@
+import { useAddOrderMutation } from '@/redux/features/order/orderApi';
 import { Button } from '@mui/material';
 import React, { FC, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 
-type UsedMaterial = {
+type UsedProducts = {
     id: string;
     quantity: number;
 };
@@ -11,46 +12,31 @@ type Props = {
     setActive: (active: number) => void;
     preButton: () => void;
     orderInfo: any;
-    selectedProductsId: UsedMaterial[];
+    selectedProductsId: UsedProducts[];
 }
 
 const ProductSubmit: FC<Props> = (props: Props) => {
 
     const [errors, setErrors] = useState("");
+    const [addOrder, {isSuccess, error}] = useAddOrderMutation();
 
     // 在组件渲染后打印 orderInfo
     useEffect(() => {
         if (isSuccess) {
-            toast.success('产品添加成功');
+            toast.success('订单添加成功');
         }
         if (error) {
             if ("data" in error) {
-                const errorMessage = error.data || "产品添加失败";
+                const errorMessage = error.data || "订单添加失败";
                 toast.error(errorMessage.message);
             }
         }
     }, [isSuccess, error]);
 
         // 在组件渲染后打印 orderInfo
-        useEffect(() => {
-            if (linkSuccess) {
-                toast.success('零配件已成功链接到该产品');
-            }
-            if (linkError) {
-                if ("data" in linkError) {
-                    const linkErrorMessage = linkError.data || "产品添加失败";
-                    toast.error(linkErrorMessage.message);
-                    setErrors(linkErrorMessage.errors);
-                }
-            }
-        }, [linkSuccess, linkError]);
 
     const handleAdd = async () => {
-        
-    }
-
-    const handleAdd2 = async () => {
-       
+        addOrder({ order: props.orderInfo, selectedProductsId:{products: props.selectedProductsId} }).unwrap();
     }
     return (
         <div className='w-[90%] m-auto'>
@@ -68,15 +54,6 @@ const ProductSubmit: FC<Props> = (props: Props) => {
                     fullWidth
                     variant="contained"
                     onClick={handleAdd}
-                    sx={{ mt: 2 }}
-                >
-                    添加
-                </Button>
-
-                <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={handleAdd2}
                     sx={{ mt: 2 }}
                 >
                     添加

@@ -17,8 +17,11 @@ const CreateOrder: FC<Props> = (props: Props) => {
     const [selectedProductsId, setselectedProductsId] = useState<Product[]>([])
     const [active, setActive] = useState(0);
     const [orderInfo, setOrderInfo] = useState({
-        order_name: "",
-        contact: "",
+        comments: "",
+        customer: "",
+        address: "",
+        phoneNumber: "",
+        deadline: "",
     })
 
     const preButton = () => {
