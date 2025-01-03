@@ -6,7 +6,6 @@ import { useTheme } from "next-themes";
 const columnOptions = [
   { label: "客户姓名", value: "customer" },
   { label: "手机号码", value: "phoneNumber" },
-  { label: "创建日期", value: "createdAt" },
   { label: "截止时间", value: "deadline" },
   { label: "地址", value: "address" },
   { label: "订单状态", value: "status" },

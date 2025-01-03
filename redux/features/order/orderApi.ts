@@ -33,11 +33,23 @@ export const orderApi = apiSlice.injectEndpoints({
                 credentials: "include" as const,
             })
         }),
-        getRequiredMaterials: builder.mutation({
-            query: ({products}) => ({
-                url: `/order/get-required-materials`,
-                method: 'POST',
-                body: {products},
+        getRequiredMaterials: builder.query({
+            query: ({ products }) => {
+                const params = new URLSearchParams();
+                params.append('products', JSON.stringify(products));
+
+                return {
+                    url: `/order/get-required-materials?${params.toString()}`,
+                    method: 'GET',
+                    credentials: 'include' as const,
+                };
+            }
+        }),
+        useRequiredMaterials: builder.mutation({
+            query: ({ materials }) => ({
+                url: '/order/use-required-materials',
+                method: 'PUT',
+                body: { materials },
                 credentials: 'include' as const,
             })
         })
@@ -48,6 +60,8 @@ export const {
     useAddOrderMutation,
     useGetOrdersQuery,
     useChangeStatusMutation,
-    useGetRequiredMaterialsMutation,
+    useGetRequiredMaterialsQuery,
+    useLazyGetRequiredMaterialsQuery,
+    useUseRequiredMaterialsMutation,
     
 } = orderApi;

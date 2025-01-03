@@ -1,5 +1,5 @@
 'use client';
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddRootMaterial from "@/app/components/Admin/Management/Material/AddRootMaterial";
 import { useGetAllRootQuery, useGetMaterialsByRootQuery } from "@/redux/features/material/materialApi";
 import HeaderBar from "./HeadBarMaterial";
@@ -28,47 +28,61 @@ const Material = (props: Props) => {
     page: currentPage,
   });
 
+  const [materials, setMaterials] = useState<any[]>([]);  // 用来管理原料数据
+
+  useEffect(() => {
+    if (filteredData?.data) {
+      setMaterials(filteredData?.data);  // 将获取的原料数据存储在父组件状态中
+    }
+  }, [filteredData]);
+
+    // 更新数量的回调函数
+    const handleUpdateCounts = (id: string, newCounts: number) => {
+      setMaterials((prevMaterials) => {
+        return prevMaterials.map((material) =>
+          material.drawing_no_id === id ? { ...material, counts: newCounts } : material
+        );
+      });
+    };
+
   useEffect(() => {
     if (error) {
-        if ("data" in error) {
-            const errorData = error as any;
-            toast.error(errorData.data.message);
-        } else {
-            console.log('An error occured: ', error);
-        }
-    }
-}, [error]);
-
-useEffect(() => {
-  if (leafError) {
-      if ("data" in leafError) {
-          const errorData = leafError as any;
-          toast.error(errorData.data.message);
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
       } else {
-          console.log('An error occured: ', leafError);
+        console.log('An error occurred: ', error);
       }
-  }
-}, [leafError]);
+    }
+  }, [error]);
 
   useEffect(() => {
-    if (added === true) {
-      setAdded(false);
-      refetch();
-      refetchRoot();
+    if (leafError) {
+      if ("data" in leafError) {
+        const errorData = leafError as any;
+        toast.error(errorData.data.message);
+      } else {
+        console.log('An error occurred: ', leafError);
+      }
     }
+  }, [leafError]);
 
-  }, [added, refetch, refetchRoot])
-
+  useEffect(() => {
+    if (added) {
+      setAdded(false); // 重置 added 状态
+      refetch(); // 重新获取数据
+      refetchRoot(); // 刷新分类数据
+    }
+  }, [added, refetch, refetchRoot]);
 
   return (
     <div>
-
       <div className="w-full p-5">
         {/* 添加原料按钮 */}
         <div className="z-50">
           <AddRootMaterial
             options={Array.isArray(data?.data) ? data.data.map(item => item) : []}
-            setAdded={setAdded}
+            setAdded={setAdded} // 传递 setAdded 函数给子组件
           />
         </div>
         <HeaderBar
@@ -80,23 +94,28 @@ useEffect(() => {
           {
             active === 1 && (
               <MaterialHero
-              data={data}
-              filteredData={filteredData}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              filters={filters}
-              setFilters={setFilters}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              isFetching={isFetching}
-              refetch={refetch}
-            />
+                data={data}
+                materials={materials}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                filters={filters}
+                setFilters={setFilters}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                isFetching={isFetching}
+                refetch={refetch}
+                handleUpdateCounts={handleUpdateCounts}
+              />
             )
           }
-          {isFetching && (<div className="fixed dark:text-white text-black top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <Typography variant="h6" className='dark:text-white text-black'>
-              加载中...
-            </Typography> </div>)}
+
+          {isFetching && (
+            <div className="fixed dark:text-white text-black top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <Typography variant="h6" className='dark:text-white text-black'>
+                加载中...
+              </Typography>
+            </div>
+          )}
         </div>
       </div>
     </div>

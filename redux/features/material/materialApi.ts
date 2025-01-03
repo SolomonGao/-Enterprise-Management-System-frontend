@@ -66,7 +66,20 @@ export const materialApi = apiSlice.injectEndpoints({
                 };
             }
         }),
+        updateMaterialCounts: builder.mutation({
+            query: ({ id, counts }: { id: string; counts: number }) => ({
+                url: `leaf/update-material-counts`,
+                method: 'PATCH', // 使用 PATCH 方法更新数据
+                body: { id, counts },
+                credentials: 'include' as const,
+            }),
+        }),
     })
 })
 
-export const { useAddRootMutation, useGetAllRootQuery, useGetMaterialsByRootQuery, useAddMaterialMutation} = materialApi;
+export const { useAddRootMutation,
+     useGetAllRootQuery,
+      useGetMaterialsByRootQuery,
+       useAddMaterialMutation,
+       useUpdateMaterialCountsMutation
+     } = materialApi;

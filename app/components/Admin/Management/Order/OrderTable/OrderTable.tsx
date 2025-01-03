@@ -1,12 +1,13 @@
 // components/OrderTable.tsx
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useMemo } from 'react';
 import FilterSection from './FilterSection';
 import OrderRow from './OrderRow';
 import ProductDetailsModal from './ProductDetailsModal';
 import { Order, Product } from './types';
-import { useChangeStatusMutation } from '@/redux/features/order/orderApi';
+import { useChangeStatusMutation, useLazyGetRequiredMaterialsQuery, useUseRequiredMaterialsMutation } from '@/redux/features/order/orderApi';
 import toast from 'react-hot-toast';
 import { useGetMaterialsByProductQuery } from '@/redux/features/product/productApi';
+import MaterialCheckModal from './MaterialCheckModal';
 
 type Props = {
   orders: Order[];
@@ -16,12 +17,61 @@ type Props = {
 const OrderTable: FC<Props> = ({ orders, refetch }) => {
 
   const [filterDays, setFilterDays] = useState<number | null>(null);
-  const [filteredOrders, setFilteredOrders] = useState(orders);
+  const [showCompleted, setShowCompleted] = useState(true); // 控制是否显示已完成订单
+
+
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const today = new Date().toISOString().split('T')[0];
 
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
   const [changeStatus, { isLoading: isUpdating }] = useChangeStatusMutation();
+  const [triggerGetMaterials, { isLoading, error: errorReq }] = useLazyGetRequiredMaterialsQuery();
+  const [UseRequiredMaterials, { isSuccess: succUse, error: errUse }] = useUseRequiredMaterialsMutation();
+
+  const handleToggleShowCompleted = () => {
+    setShowCompleted((prev) => !prev);
+  };
+
+  // 获取物料信息
+  const handleGetMaterials = async (order: Order) => {
+    try {
+      setSelectedOrder(order);
+      const response = await triggerGetMaterials({ products: order.products });
+      setMaterials(response.data.data);
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error('Error fetching materials:', err);
+    }
+  };
+
+  const [materials, setMaterials] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 确认后更新状态为生产中
+  const handleConfirmProduction = async () => {
+    if (!selectedOrder) return;
+    try {
+      // 第一个操作: 执行所需材料更新
+      const materialResponse = await UseRequiredMaterials({ materials });
+
+      if (materialResponse && materialResponse.data.success) {
+        // 如果更新成功，继续执行第二个操作: 更新订单状态
+        await handleStatusChange(selectedOrder._id, '生产中', selectedOrder.__v);
+
+        // 关闭模态框
+        setIsModalOpen(false);
+      } else {
+        // 处理更新失败的情况
+        console.error('改变状态失败失败');
+      }
+    } catch (error) {
+      // 处理错误
+      console.error('发生错误:', error);
+    }
+  };
+
 
   const [isProductLoading, setIsProductLoading] = useState(false); // 新增 loading 状态
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,8 +82,6 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
     },
     { skip: !selectedProduct?.id }
   );
-
-
 
 
   useEffect(() => {
@@ -53,6 +101,19 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
     }
   }, [error]);
 
+
+
+  useEffect(() => {
+    if (errorReq) {
+      if ("data" in errorReq) {
+        const errorData = errorReq as any;
+        toast.error(errorData.data.message);
+      } else {
+        console.log("An error occured: ", errorReq);
+      }
+    }
+  }, [errorReq]);
+
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFilterDays(value ? parseInt(value) : null);
@@ -67,24 +128,24 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
   };
 
   const getRowClassName = (remainingDays: number) => {
-    if (remainingDays < 10) {
-      return 'text-red-400 font-semibold'; // 红色预警
-    } else if (remainingDays < 30) {
+    if (remainingDays <= 0) {
+      return 'text-red-800 font-semibold'; // 橙色预警
+    } else if (remainingDays < 30 && remainingDays >= 10) {
       return 'text-yellow-400 font-semibold'; // 黄色预警
+    } else if (remainingDays < 10) {
+      return 'text-orange-600 font-semibold';
     }
     return 'text-gray-800 dark:text-gray-300'; // 默认样式
   };
-
-  useEffect(() => {
+  // 使用 useMemo 缓存过滤后的订单
+  const filteredOrders = useMemo(() => {
     if (filterDays !== null) {
-      const filtered = orders.filter((order) => {
+      return orders.filter((order) => {
         const remainingDays = calculateRemainingDays(order.deadline);
         return remainingDays <= filterDays;
       });
-      setFilteredOrders(filtered);
-    } else {
-      setFilteredOrders(orders);
     }
+    return orders;
   }, [filterDays, orders]);
 
   const toggleExpanded = (orderId: string) => {
@@ -115,17 +176,32 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
 
   return (
     <div className="overflow-x-auto">
-      <FilterSection filterDays={filterDays} onFilterChange={handleFilterChange} />
+      <div className="flex items-center justify-between mb-4">
+        <FilterSection filterDays={filterDays} onFilterChange={handleFilterChange} />
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="toggleShowCompleted"
+            checked={!showCompleted}
+            onChange={handleToggleShowCompleted}
+            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <label htmlFor="toggleShowCompleted" className="ml-2 text-gray-800 dark:text-gray-300">
+            隐藏已完成订单
+          </label>
+        </div>
+      </div>
       <table className="min-w-full table-auto border-separate border-spacing-2 border border-gray-300 dark:border-gray-600 rounded-lg">
         <thead className="bg-gray-100 dark:bg-gray-700 text-left">
           <tr>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">客户</th>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">电话</th>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">地址</th>
-            <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden sm:table-cell">交货日期</th>
-            <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden sm:table-cell">创建时间</th>
+            <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">交货日期</th>
+            <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">创建时间</th>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">产品</th>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">剩余天数</th>
+            <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium ">装配生产</th>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">状态</th>
           </tr>
         </thead>
@@ -141,6 +217,9 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
               isUpdating={isUpdating}
               calculateRemainingDays={calculateRemainingDays}
               getRowClassName={getRowClassName}
+              handleGetMaterials={handleGetMaterials}
+              isLoading={isLoading}
+              showCompleted={showCompleted}
             />
           ))}
         </tbody>
@@ -154,6 +233,16 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
         currentPage={currentPage}
         isProductLoading={isProductLoading}
       />
+      <>
+        {isModalOpen && (
+          <MaterialCheckModal
+            materials={materials}
+            onConfirm={handleConfirmProduction}
+            onClose={() => setIsModalOpen(false)}
+            isLoading={isLoading}
+          />
+        )}
+      </>
     </div>
   );
 };

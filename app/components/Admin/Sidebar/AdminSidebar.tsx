@@ -85,6 +85,7 @@ const AdminSidebar: FC<Props> = (props: Props) => {
         }}>
         {/* Profile Section */}
         <div className="flex flex-col items-center bg-white dark:bg-[#111827]">
+        <Link href={"/profile"}>
           <Image
             src={user.avatar ? user.avatar.url : avatarDefault}
             alt=""
@@ -94,6 +95,7 @@ const AdminSidebar: FC<Props> = (props: Props) => {
             style={{ border: "2px solid #ffc107" }}
 
           />
+          </Link>
           <h3 className="mt-2 text-lg font-bold text-teal-400">{!isCollapsed ? user.name : "..."}</h3>
           <p className="text-m dark:text-white text-black mt-2"> {user.role} </p>
         </div>

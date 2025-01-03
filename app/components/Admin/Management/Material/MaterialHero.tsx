@@ -8,7 +8,7 @@ import { debounce } from "lodash";
 
 type MaterialHeroProps = {
   data: any;
-  filteredData: any;
+  materials: any;
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
   filters: any;
@@ -17,11 +17,12 @@ type MaterialHeroProps = {
   setCurrentPage: (page: number) => void;
   isFetching: boolean;
   refetch: () => void;
+  handleUpdateCounts: (id: string, newCounts: number) => void;
 };
 
 const MaterialHero: React.FC<MaterialHeroProps> = ({
   data,
-  filteredData,
+  materials,
   selectedCategory,
   setSelectedCategory,
   filters,
@@ -30,6 +31,7 @@ const MaterialHero: React.FC<MaterialHeroProps> = ({
   setCurrentPage,
   isFetching,
   refetch,
+  handleUpdateCounts
 }) => {
   
   // 防抖搜索
@@ -61,7 +63,7 @@ const MaterialHero: React.FC<MaterialHeroProps> = ({
       {/* 分类下拉菜单 */}
       <div className="mt-5">
         <Dropdown
-          options={Array.isArray(data?.data) ? data.data.map((item) => item) : []}
+          options={Array.isArray(data) ? data.map((item) => item) : []}
           value={selectedCategory}
           onChange={setSelectedCategory}
           disableAll={false}
@@ -70,14 +72,14 @@ const MaterialHero: React.FC<MaterialHeroProps> = ({
 
       {/* 显示原料信息 */}
       <div className="mt-5">
-        <MaterialCatelogy materials={filteredData?.data || []} />
+        <MaterialCatelogy materials={materials || []} handleUpdateCounts={handleUpdateCounts} />
       </div>
 
       {/* 分页组件 */}
-      {filteredData?.totalPages > 0 && (
+      {materials?.totalPages > 0 && (
         <div className="mt-5">
           <Pagination
-            totalPages={filteredData.totalPages}
+            totalPages={materials.totalPages}
             currentPage={currentPage}
             onPageChange={handlePageChange}
           />

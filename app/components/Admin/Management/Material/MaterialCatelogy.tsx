@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
+import { useUpdateMaterialCountsMutation } from "@/redux/features/material/materialApi";
 
 type Material = {
   model_name: string;
@@ -15,11 +17,14 @@ type Material = {
 
 type Props = {
   materials: Material[];
+  handleUpdateCounts: (id: string, counts: number) => void;
 };
 
-const MaterialCatelogy: React.FC<Props> = ({ materials }) => {
+const MaterialCatelogy: React.FC<Props> = ({ materials, handleUpdateCounts }) => {
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [editCounts, setEditCounts] = useState<{ [key: string]: string }>({}); // 用于存储临时输入的数量
+  const [updateCounts] = useUpdateMaterialCountsMutation();
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) =>
@@ -30,6 +35,28 @@ const MaterialCatelogy: React.FC<Props> = ({ materials }) => {
   if (materials.length === 0) {
     return <div className="text-gray-500 text-center">没有找到匹配的材料</div>;
   }
+
+  const handleInputChange = (id: string, value: string) => {
+    setEditCounts((prev) => ({ ...prev, [id]: value }));
+  };
+
+
+  const handleUpdateCounts1 = async (id: string) => {
+    const newCounts = parseInt(editCounts[id], 10);
+    if (!isNaN(newCounts) && newCounts >= 0) {
+      try {
+        await updateCounts({ id, counts: newCounts }).unwrap();
+        handleUpdateCounts(id, newCounts);
+        toast.success("数量更新成功！");
+
+      } catch (error) {
+        toast.error(`更新失败，请重试！, ${error}`);
+      }
+      setEditCounts((prev) => ({ ...prev, [id]: "" })); // 清空输入框
+    } else {
+      toast.error("请输入有效的数量！");
+    }
+  };
 
   return (
     <div>
@@ -131,6 +158,25 @@ const MaterialCatelogy: React.FC<Props> = ({ materials }) => {
                   />
                 </div>
               )}
+              {/* 修改数量区域 */}
+              <div className="mt-4">
+                <input
+                  type="number"
+                  min="0"
+                  value={editCounts[material.drawing_no_id] || ""}
+                  onChange={(e) =>
+                    handleInputChange(material.drawing_no_id, e.target.value)
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="输入新的数量"
+                />
+                <button
+                  onClick={() => handleUpdateCounts1(material.drawing_no_id)}
+                  className="w-full mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
+                >
+                  更新数量
+                </button>
+              </div>
             </div>
           </div>
         ))}

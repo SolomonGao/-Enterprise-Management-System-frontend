@@ -31,7 +31,7 @@ const OrderHero: FC<Props> = ({
             setCurrentPage(1);
             refetch();
         }, 300),
-        [refetch]
+        [setFilters, setCurrentPage, refetch]
     );
 
     // 防抖翻页
@@ -40,7 +40,7 @@ const OrderHero: FC<Props> = ({
             setCurrentPage(page);
             refetch();
         }, 300),
-        [refetch]
+        [setCurrentPage, refetch]
     );
 
 

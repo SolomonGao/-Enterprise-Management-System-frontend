@@ -22,7 +22,7 @@ const ProductDetailsModal: React.FC<Props> = ({ selectedProduct, onClose, setCur
 
   if (!selectedProduct) return null;
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm z-50">
           <div className="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-lg w-full max-h-[90vh] overflow-auto shadow-xl relative">
             <button
               onClick={() => onClose()} // 关闭模态框

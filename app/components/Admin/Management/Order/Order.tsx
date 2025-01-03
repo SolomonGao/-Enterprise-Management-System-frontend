@@ -22,7 +22,7 @@ const Order: FC<Props> = (props: Props) => {
   const { data: filteredData, isLoading, error, refetch, isLoading: isFetching } = useGetOrdersQuery({
     page: currentPage,
     terms: filters,
-    limit: 10,
+    limit: 5,
   });
 
   useEffect(() => {
