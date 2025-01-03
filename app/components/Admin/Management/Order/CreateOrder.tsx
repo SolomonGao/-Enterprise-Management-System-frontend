@@ -77,7 +77,7 @@ const CreateOrder: FC<Props> = (props: Props) => {
                                 </p>
                             </div>
                             <div className='w-[90%] m-auto block mt-5'>
-                                <OrderSubmit preButton={preButton} setActive={setActive} orderInfo={orderInfo} selectedProductsId={selectedProductsId}/>
+                                <OrderSubmit preButton={preButton} setActive={setActive} orderInfo={orderInfo} selectedProductsId={selectedProductsId} setSelectedProductsId={setselectedProductsId} setOrderInfo={setOrderInfo}/>
                             </div>
                         </div>
                     )

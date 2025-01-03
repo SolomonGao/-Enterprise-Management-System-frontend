@@ -1,5 +1,6 @@
 import { useAddOrderMutation } from '@/redux/features/order/orderApi';
 import { Button } from '@mui/material';
+import { set } from 'lodash';
 import React, { FC, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 
@@ -13,17 +14,31 @@ type Props = {
     preButton: () => void;
     orderInfo: any;
     selectedProductsId: UsedProducts[];
+    setOrderInfo: (orderInfo: any) => void;
+    setSelectedProductsId: (selectedProductsId: UsedProducts[]) => void;
 }
 
 const ProductSubmit: FC<Props> = (props: Props) => {
 
     const [errors, setErrors] = useState("");
-    const [addOrder, {isSuccess, error}] = useAddOrderMutation();
+    const [addOrder, { isSuccess, error }] = useAddOrderMutation();
 
     // 在组件渲染后打印 orderInfo
     useEffect(() => {
         if (isSuccess) {
             toast.success('订单添加成功');
+
+            props.setOrderInfo({
+                comments: "",
+                customer: "",
+                address: "",
+                phoneNumber: "",
+                deadline: "",
+            });
+    
+            props.setSelectedProductsId([]);
+            props.setActive(0);
+    
         }
         if (error) {
             if ("data" in error) {
@@ -33,10 +48,8 @@ const ProductSubmit: FC<Props> = (props: Props) => {
         }
     }, [isSuccess, error]);
 
-        // 在组件渲染后打印 orderInfo
-
     const handleAdd = async () => {
-        addOrder({ order: props.orderInfo, selectedProductsId:{products: props.selectedProductsId} }).unwrap();
+        await addOrder({ order: props.orderInfo, selectedProductsId: { products: props.selectedProductsId } }).unwrap();
     }
     return (
         <div className='w-[90%] m-auto'>

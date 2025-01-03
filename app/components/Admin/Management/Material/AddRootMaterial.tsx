@@ -65,10 +65,26 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
     if (isSuccessLeaf) {
       toast.success('原料添加成功');
       setAdded(true);
+      // 清空所有原料相关字段
+      setMaterialDetails({
+        model_name: '',
+        name: '',
+        row_materials: '',
+        comments: '',
+        counts: 0,
+        specification: '',
+        drawing_no_id: '',
+        drawing_no: { file: null, fileType: "" },
+        root_materials_idroot_materials: '',
+      });
+      setSelectedImage({ file: null, fileType: '' });
+      setSelectedCategory(''); // 重置分类
+      setLoading(false); // 请求完成后解除加载状态
     }
     if (errorLeaf) {
       console.log(errorLeaf);
       toast.error("添加失败");
+      setLoading(false); // 请求完成后解除加载状态
     }
 
   }, [isSuccessLeaf, errorLeaf])
@@ -77,7 +93,8 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
     if (isSuccess) {
       toast.success('分类添加成功');
       setAdded(true);
-      setLoading(false);
+      setLoading(false); // 请求完成后解除加载状态
+      setMaterialName(''); // 清空分类名称
     }
 
     if (error) {
@@ -92,7 +109,6 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
     setLoading(true); // 设置加载状态
     if (operation === 'category') {
       await addRoot(materialName);
-      setLoading(false); // 请求完成后解除加载状态
     } else {
 
       if (selectedCategory === "") {
@@ -105,16 +121,13 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
         toast.error('名称，型号和数量是必填项');
         setLoading(false);
         return;
-        // if (!materialDetails.counts)
       }
       materialDetails.root_materials_idroot_materials = selectedCategory;
       if (selectedImage) {
         materialDetails.drawing_no = selectedImage;
       }
       await addMaterial(materialDetails);
-      setLoading(false); // 请求完成后解除加载状态
     }
-    setOpen(false);
   };
 
   return (
@@ -134,7 +147,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
               p: 3,
               bgcolor: theme === 'dark' ? '#111827' : 'white',
               borderRadius: 2,
-              maxWidth: "350px",
+              maxWidth: "1300px",
               maxHeight: "80vh",   // 控制对话框高度
               overflowY: "auto"    // 添加垂直滚动条
             }}

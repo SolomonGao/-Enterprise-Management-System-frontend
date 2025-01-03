@@ -21,7 +21,7 @@ const ProductDrawingNo: FC<Props> = ({ selectedImage, setSelectedImage, preButto
                 <input
                     type="drawingNoId"
                     name=""
-                    required={false}
+                    required
                     value={productInfo.drawingNoId}
                     onChange={(e) =>
                         setProductInfo({ ...productInfo, drawingNoId: e.target.value })

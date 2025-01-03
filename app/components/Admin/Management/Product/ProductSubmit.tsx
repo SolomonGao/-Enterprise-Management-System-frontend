@@ -14,6 +14,9 @@ type Props = {
     productInfo: any;
     selectedMaterialsId: UsedMaterial[];
     selectedImage: any;
+    setProductInfo: (productInfo: any) => void;
+    setSelectedImage: (selectedImage: any) => void;
+    setSelectedMaterialsId: (selectedMaterialsId: UsedMaterial[]) => void;
 }
 
 const ProductSubmit: FC<Props> = (props: Props) => {
@@ -38,6 +41,21 @@ const ProductSubmit: FC<Props> = (props: Props) => {
         useEffect(() => {
             if (linkSuccess) {
                 toast.success('零配件已成功链接到该产品');
+
+                props.setProductInfo({
+                    idProduct: "",
+                    modelName: "",
+                    pumpModel: "",
+                    drawingNoId: "",
+                    manufacturer: "",
+                })
+                props.setSelectedImage({
+                    file: null,
+                    fileType: "",
+                })
+                props.setSelectedMaterialsId([]);
+                props.setActive(0);
+                
             }
             if (linkError) {
                 if ("data" in linkError) {
@@ -49,11 +67,11 @@ const ProductSubmit: FC<Props> = (props: Props) => {
         }, [linkSuccess, linkError]);
 
     const handleAdd = async () => {
-        addProduct({ productInfo: props.productInfo, selectedImage: props.selectedImage }).unwrap();
+        await addProduct({ productInfo: props.productInfo, selectedImage: props.selectedImage }).unwrap();
     }
 
     const handleAdd2 = async () => {
-        productToMaterial({ idProduct: props.productInfo.idProduct, selectedMaterialsId: props.selectedMaterialsId }).unwrap();
+        await productToMaterial({ idProduct: props.productInfo.idProduct, selectedMaterialsId: props.selectedMaterialsId }).unwrap();
     }
     return (
         <div className='w-[90%] m-auto'>

@@ -73,7 +73,7 @@ const ProductInfomation: FC<Props> = (props: Props) => {
                     <input
                         type="name"
                         name=""
-                        required
+                        // required
                         value={props.productInfo.manufacturer}
                         onChange={(e) =>
                             props.setProductInfo({ ...props.productInfo, manufacturer: e.target.value })
@@ -97,7 +97,7 @@ const ProductInfomation: FC<Props> = (props: Props) => {
                     <input
                         type="name"
                         name=""
-                        required
+                        // required
                         value={props.productInfo.pumpModel}
                         onChange={(e) =>
                             props.setProductInfo({ ...props.productInfo, pumpModel: e.target.value })

@@ -96,7 +96,16 @@ const CreateProduct = (props: Props) => {
                                 </p>
                             </div>
                             <div className='w-[90%] m-auto block mt-5'>
-                                <ProductSubmit preButton={preButton} setActive={setActive} productInfo={productInfo} selectedMaterialsId={selectedMaterialsId} selectedImage={selectedImage} />
+                                <ProductSubmit
+                                    preButton={preButton}
+                                    setActive={setActive}
+                                    productInfo={productInfo}
+                                    selectedMaterialsId={selectedMaterialsId}
+                                    selectedImage={selectedImage}
+                                    setProductInfo={setProductInfo}
+                                    setSelectedImage={setSelectedImage}
+                                    setSelectedMaterialsId={setSelectedMaterialsId}
+                                />
                             </div>
                         </div>
                     )

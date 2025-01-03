@@ -185,6 +185,15 @@ const AdminSidebar: FC<Props> = (props: Props) => {
               订单管理
             </MenuItem>
           </Link>
+
+          <Link href={"/admin/purchase"}>
+            <MenuItem
+              icon={<SiElementor />}
+              className="text-black dark:text-white"
+            >
+              采购管理
+            </MenuItem>
+          </Link>
         </SubMenu>
 
         {/* Content Section */}
