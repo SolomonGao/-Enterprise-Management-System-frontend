@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import SearchBar from "@/app/components/Admin/Management/Material/SearchBar";
 import Dropdown from "@/app/components/Admin/Management/Material/Dropdown";
 import MaterialCatelogy from "./MaterialCatelogy";
@@ -18,6 +18,7 @@ type MaterialHeroProps = {
   isFetching: boolean;
   refetch: () => void;
   handleUpdateCounts: (id: string, newCounts: number) => void;
+  totalPages: number;
 };
 
 const MaterialHero: React.FC<MaterialHeroProps> = ({
@@ -31,7 +32,8 @@ const MaterialHero: React.FC<MaterialHeroProps> = ({
   setCurrentPage,
   isFetching,
   refetch,
-  handleUpdateCounts
+  handleUpdateCounts,
+  totalPages,
 }) => {
   
   // 防抖搜索
@@ -76,10 +78,10 @@ const MaterialHero: React.FC<MaterialHeroProps> = ({
       </div>
 
       {/* 分页组件 */}
-      {materials?.totalPages > 0 && (
+      {totalPages > 0 && (
         <div className="mt-5">
           <Pagination
-            totalPages={materials.totalPages}
+            totalPages={totalPages}
             currentPage={currentPage}
             onPageChange={handlePageChange}
           />

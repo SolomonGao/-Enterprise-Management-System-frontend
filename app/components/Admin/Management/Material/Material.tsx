@@ -18,6 +18,8 @@ const Material = (props: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [active, setActive] = useState(1);
 
+  const [totalPages, setTotalPages] = useState(0);
+
   // 获取分类数据
   const { data, error, refetch: refetchRoot } = useGetAllRootQuery({});
 
@@ -33,6 +35,7 @@ const Material = (props: Props) => {
   useEffect(() => {
     if (filteredData?.data) {
       setMaterials(filteredData?.data);  // 将获取的原料数据存储在父组件状态中
+      setTotalPages(filteredData?.totalPages);
     }
   }, [filteredData]);
 
@@ -105,6 +108,7 @@ const Material = (props: Props) => {
                 isFetching={isFetching}
                 refetch={refetch}
                 handleUpdateCounts={handleUpdateCounts}
+                totalPages={totalPages}
               />
             )
           }
