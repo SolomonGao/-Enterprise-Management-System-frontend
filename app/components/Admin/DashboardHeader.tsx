@@ -1,5 +1,5 @@
 import { ThemeSwitcher } from "@/app/utils/ThemeSwitcher";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 
 type Props = {
