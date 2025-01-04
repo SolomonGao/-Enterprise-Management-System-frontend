@@ -7,6 +7,12 @@ import { Typography } from "@mui/material";
 import MaterialHero from "./MaterialHero";
 import toast from "react-hot-toast";
 
+interface DataItem {
+  idroot_material: string;
+  root_name: string;
+  // 其他字段...
+}
+
 type Props = {};
 
 const Material = (props: Props) => {
@@ -84,7 +90,7 @@ const Material = (props: Props) => {
         {/* 添加原料按钮 */}
         <div className="z-50">
           <AddRootMaterial
-            options={Array.isArray(data?.data) ? data.data.map(item => item) : []}
+            options={Array.isArray(data?.data) ? data.data.map((item: DataItem) => item) : []}
             setAdded={setAdded} // 传递 setAdded 函数给子组件
           />
         </div>
