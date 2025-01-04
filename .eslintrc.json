@@ -1,3 +1,7 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "no-console": "off", // Disable 'no-console' rule
+    "react/react-in-jsx-scope": "off" // Disable 'react/react-in-jsx-scope' rule (for Next.js, it's not necessary)
+  }
 }
