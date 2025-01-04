@@ -1,3 +1,4 @@
+import { verify } from "crypto";
 import { apiSlice } from "../api/apiSlice";
 
 export const userApi = apiSlice.injectEndpoints({
@@ -41,7 +42,14 @@ export const userApi = apiSlice.injectEndpoints({
                 credentials: "include" as const,
             })
         }),
+        verifyResetPasswordToken: builder.query({
+            query: ({token, email}) => ({
+                url: `user/verify-reset-password-token?token=${token}&email=${email}`,
+                method: "GET",
+                credentials: "include" as const,
+            }),
+        }),
     })
 })
 
-export const { useUpdateAvatarMutation, useGetAllUsersQuery, useUpdateUserRoleMutation, useEditProfileMutation, useChangePasswordMutation } = userApi;
+export const { useUpdateAvatarMutation, useGetAllUsersQuery, useUpdateUserRoleMutation, useEditProfileMutation, useChangePasswordMutation, useLazyVerifyResetPasswordTokenQuery } = userApi;

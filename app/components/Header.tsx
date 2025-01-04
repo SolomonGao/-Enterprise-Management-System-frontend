@@ -13,6 +13,7 @@ import Image from "next/image";
 import avatar from "../../public/avatar.png";
 import ResetPassword from "./Auth/ResetPassword";
 import SignUp from "./Auth/SignUp";
+import PostResetPassword from "./Auth/PostResetPassword";
 
 type Props = {
     open: boolean;
@@ -229,8 +230,6 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
                                     activeItem={activeItem}
                                     component={ResetPassword}
                                 >
-
-
                                 </CustomModal>
                             )
                         }

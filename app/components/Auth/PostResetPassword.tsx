@@ -2,13 +2,14 @@
 import React, { FC, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useParams } from "next/navigation";
 import { style } from "../../styles/style";
 import { usePostResetPasswordMutation } from "@/redux/features/auth/authApi";
 import toast from "react-hot-toast";
 
 type Props = {
     token: string;
+    setRoute: (route: string) => void;
+    setIsPasswordInputVisible: (visible: boolean) => void;
 };
 
 const schema = Yup.object().shape({
@@ -21,11 +22,14 @@ const schema = Yup.object().shape({
 });
 
 const ResetPassword: FC<Props> = (props: Props) => {
-    const [postResetPassword, { isSuccess, error }] = usePostResetPasswordMutation({});
+    const [postResetPassword, { isSuccess, error }] = usePostResetPasswordMutation();
 
     useEffect(() => {
         if (isSuccess) {
-            toast.success("密码重置成功，请重新登录！");
+            toast.success("密码重置成功，请重新登录");
+            props.setIsPasswordInputVisible(false);
+            props.setRoute("Login");
+
         }
 
         if (error) {
@@ -59,7 +63,6 @@ const ResetPassword: FC<Props> = (props: Props) => {
 
     return (
         <div className="w-full">
-            <h1 className={`${style.title}`}>重置密码</h1>
             <form onSubmit={handleSubmit}>
                 <label className={`${style.label}`} htmlFor="password">
                     输入您的新密码

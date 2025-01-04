@@ -109,9 +109,9 @@ export const authApi = apiSlice.injectEndpoints({
         }),
         postResetPassword:  builder.mutation({
             query: ({token, password}) => ({
-                url: `user/post-reset-password/?token=${new URLSearchParams(token).toString()}`,
+                url: `user/post-reset-password`,
                 method: "POST",
-                body: {password},
+                body: {password, token},
                 credentials: "include" as const
             }),
         }),
