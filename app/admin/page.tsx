@@ -9,7 +9,7 @@ type Props = {
   children?: React.ReactNode
 }
 
-const adminPage: FC<Props> = () => {
+const AdminPage: FC<Props> = () => {
   return (
     <RequireRole allowedRoles={["管理"]}>
       <div>
@@ -34,4 +34,4 @@ const adminPage: FC<Props> = () => {
   )
 }
 
-export default adminPage
+export default AdminPage

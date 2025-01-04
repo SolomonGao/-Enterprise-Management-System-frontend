@@ -12,7 +12,7 @@ type Props = {
   children?: React.ReactNode;
 }
 
-const page: FC<Props> = () => {
+const Page: FC<Props> = () => {
 
   return (
     <RequireRole allowedRoles={["管理"]}>
@@ -45,4 +45,4 @@ const page: FC<Props> = () => {
   );
 };
 
-export default page
+export default Page
