@@ -9,7 +9,6 @@ import Material from '@/app/components/Admin/Management/Material/Material';
 
 
 type Props = {
-  children?: React.ReactNode;
 }
 
 const Page: FC<Props> = () => {

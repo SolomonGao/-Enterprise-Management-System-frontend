@@ -6,7 +6,6 @@ import RequireRole from '../hooks/RequireRole'
 import DashboardHero from "../components/Admin/DashBoardHero"
 
 type Props = {
-  children?: React.ReactNode
 }
 
 const AdminPage: FC<Props> = () => {

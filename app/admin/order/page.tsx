@@ -8,7 +8,6 @@ import Order from '../../components/Admin/Management/Order/Order';
 
 
 type Props = {
-  children?: React.ReactNode;
 }
 
 const Page: FC<Props> = () => {
