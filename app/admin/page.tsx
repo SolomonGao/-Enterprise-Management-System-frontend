@@ -5,10 +5,9 @@ import AdminSidebar from "../components/Admin/Sidebar/AdminSidebar"
 import RequireRole from '../hooks/RequireRole'
 import DashboardHero from "../components/Admin/DashBoardHero"
 
-type Props = {
-}
 
-const AdminPage: FC<Props> = () => {
+
+const AdminPage: FC = () => {
   return (
     <RequireRole allowedRoles={["管理"]}>
       <div>

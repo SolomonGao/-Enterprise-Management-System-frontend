@@ -7,10 +7,8 @@ import DashboardHeader from '@/app/components/Admin/DashboardHeader';
 import Order from '../../components/Admin/Management/Order/Order';
 
 
-type Props = {
-}
 
-const Page: FC<Props> = () => {
+const Page: FC = () => {
 
   return (
     <RequireRole allowedRoles={["管理"]}>
