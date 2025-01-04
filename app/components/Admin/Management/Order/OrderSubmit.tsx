@@ -1,9 +1,12 @@
 import { useAddOrderMutation } from '@/redux/features/order/orderApi';
 import { Button } from '@mui/material';
-import { set } from 'lodash';
 import React, { FC, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
-
+interface ErrorResponse {
+    data?: { message: string };
+    message?: string;
+  }
+  
 type UsedProducts = {
     id: string;
     quantity: number;
@@ -42,8 +45,8 @@ const ProductSubmit: FC<Props> = (props: Props) => {
         }
         if (error) {
             if ("data" in error) {
-                const errorMessage = error.data || "订单添加失败";
-                toast.error(errorMessage.message);
+                const errorData = error as ErrorResponse;
+                toast.error(errorData!.data!.message);
             }
         }
     }, [isSuccess, error]);

@@ -1,3 +1,4 @@
+import { ErrorResponse } from '@/app/utils/types';
 import { useAddProductMutation, useProductToMaterialMutation } from '@/redux/features/product/productApi';
 import { Button } from '@mui/material';
 import React, { FC, useEffect, useState } from 'react'
@@ -30,11 +31,12 @@ const ProductSubmit: FC<Props> = (props: Props) => {
             toast.success('产品添加成功');
         }
         if (error) {
-            if ("data" in error) {
-                const errorMessage = error.data || "产品添加失败";
-                toast.error(errorMessage.message);
+            if (error) {
+                if ("data" in error) {
+                    const errorData = error as ErrorResponse;
+                    toast.error(errorData!.data!.message);
+                }
             }
-        }
     }, [isSuccess, error]);
 
         // 在组件渲染后打印 productInfo

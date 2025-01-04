@@ -1,6 +1,6 @@
 // components/ProductDetailsModal.tsx
 import React, { useState } from 'react';
-import { Product } from './types';
+import { Product } from '../../../../../utils/types';
 import Pagination from '@/app/components/Pagination/Pagination';
 import ImageModal from '../../../ImageModal';
 

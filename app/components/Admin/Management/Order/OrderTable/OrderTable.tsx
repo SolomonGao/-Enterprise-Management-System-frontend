@@ -3,7 +3,7 @@ import React, { FC, useState, useEffect, useMemo } from 'react';
 import FilterSection from './FilterSection';
 import OrderRow from './OrderRow';
 import ProductDetailsModal from './ProductDetailsModal';
-import { Order, Product } from './types';
+import { Order, Product } from '../../../../../utils/types';
 import { useChangeStatusMutation, useLazyGetRequiredMaterialsQuery, useUseRequiredMaterialsMutation } from '@/redux/features/order/orderApi';
 import toast from 'react-hot-toast';
 import { useGetMaterialsByProductQuery } from '@/redux/features/product/productApi';

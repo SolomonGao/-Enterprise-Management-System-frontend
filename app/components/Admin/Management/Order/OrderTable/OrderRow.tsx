@@ -1,6 +1,6 @@
 // components/OrderRow.tsx
 import React, { useEffect, useState } from 'react';
-import { Product, Order } from './types';
+import { Product, Order } from '../../../../../utils/types';
 
 
 type Props = {

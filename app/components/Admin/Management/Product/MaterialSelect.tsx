@@ -6,6 +6,7 @@ import { Typography } from '@mui/material'
 import { useGetAllRootQuery, useGetMaterialsByRootQuery } from '@/redux/features/material/materialApi'
 import { debounce } from 'lodash'
 import Pagination from "../../../Pagination/Pagination";
+import { DataItem } from '@/app/utils/types'
 
 type UsedMaterial = {
     id: string;
@@ -78,7 +79,7 @@ const MaterialSelect: FC<Props> = (props: Props) => {
                 {/* 分类下拉菜单 */}
                 <div className="mt-5">
                     <Dropdown
-                        options={Array.isArray(data?.data) ? data.data.map(item => item) : []}
+                        options={Array.isArray(data?.data) ? data.data.map((item: DataItem)=> item) : []}
                         value={selectedCategory}
                         onChange={setSelectedCategory}
                         disableAll={false}
