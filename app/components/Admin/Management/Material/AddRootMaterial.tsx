@@ -19,6 +19,7 @@ type Material = {
   drawing_no_id: string;
   drawing_no: { file: string | null; fileType: string };
   root_materials_idroot_materials: string;
+  [key: string]: any;
 };
 
 type RootMaterial = {
@@ -41,7 +42,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [operation, setOperation] = useState('category');
   const [materialName, setMaterialName] = useState('');
-  const [materialDetails, setMaterialDetails] = useState<Partial<Material>>({
+  const [materialDetails, setMaterialDetails] = useState<Partial<Material> & { [key: string]: any }>({
     model_name: '',
     name: '',
     row_materials: '',
