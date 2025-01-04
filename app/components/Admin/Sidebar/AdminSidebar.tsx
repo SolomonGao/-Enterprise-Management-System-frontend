@@ -19,14 +19,14 @@ type Props = {
 
 const AdminSidebar: FC<Props> = (props: Props) => {
   const { user } = useSelector((state: any) => state.auth);
-  const { logout, setLougout } = useState(false);
+  // const { logout, setLougout } = useState(false);
   const { theme, setTheme } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const logoutHandler = () => {
-    setLougout(true);
-  }
+  // const logoutHandler = () => {
+  //   setLougout(true);
+  // }
 
   const handleResize = () => {
     if (window.innerWidth < 1500) {
