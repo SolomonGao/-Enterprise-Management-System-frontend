@@ -17,8 +17,5 @@
             "dest": "/"
         }
     ],
-  "outputDirectory": "out",
-  "scripts": {
-    "build": "next build && next export"
-  }
+  "outputDirectory": "out"
 }
