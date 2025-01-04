@@ -1,9 +1,32 @@
+'use client'
 import ResetPassword from "@/app/components/Auth/PostResetPassword";
 import { Box } from "@mui/material";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-// 在 app 目录中，Next.js 会自动为你提供动态路由参数
-export default async function ResetPasswordPage({ params }: { params: { token: string } }) {
-    const { token } = await params;  // 从params获取动态路由参数
+
+export default function ResetPasswordPage() {
+    const router = useRouter();
+
+    const [token, setToken] = useState<string | null>(null); // 用来存储 token
+
+    useEffect(() => {
+        // 在客户端渲染时获取 token
+        if (router.query.token) {
+            setToken(router.query.token as string);  // 更新 token
+        }
+    }, [router.query.token]); // 依赖 router.query.token
+
+     // 如果 token 还没有获取到，显示加载状态
+     if (!token) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
+                <Box className="flex items-center justify-center w-[450px] bg-white dark:bg-slate-900 rounded-[8px] shadow p-4 outline-none">
+                    正在加载...
+                </Box>
+            </div>
+        );
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
@@ -14,4 +37,3 @@ export default async function ResetPasswordPage({ params }: { params: { token: s
     );
 }
 
-// 确保你使用的是 Next.js 13 的新的动态路由方式
