@@ -1,13 +1,15 @@
 'use client'
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import Heading from '../utils/Heading'
 import AdminSidebar from "../components/Admin/Sidebar/AdminSidebar"
 import RequireRole from '../hooks/RequireRole'
 import DashboardHero from "../components/Admin/DashBoardHero"
 
-type Props = {}
+type Props = {
+  children?: React.ReactNode
+}
 
-const adminPage: FC<Props> = (props: Props) => {
+const adminPage: FC<Props> = () => {
   return (
     <RequireRole allowedRoles={["管理"]}>
       <div>

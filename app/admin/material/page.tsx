@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, {FC } from 'react';
 import AdminSidebar from '@/app/components/Admin/Sidebar/AdminSidebar';
 import Heading from '@/app/utils/Heading';
 import RequireRole from '@/app/hooks/RequireRole';
@@ -8,11 +8,11 @@ import Material from '@/app/components/Admin/Management/Material/Material';
 
 
 
+type Props = {
+  children?: React.ReactNode;
+}
 
-type Props = {}
-
-const page = (props: Props) => {
-
+const page: FC<Props> = () => {
 
   return (
     <RequireRole allowedRoles={["管理"]}>
