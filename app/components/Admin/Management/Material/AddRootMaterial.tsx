@@ -39,7 +39,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
   });
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [operation, setOperation] = useState<'category' | 'material'>('category');
+  const [operation, setOperation] = useState('category');
   const [materialName, setMaterialName] = useState('');
   const [materialDetails, setMaterialDetails] = useState<Partial<Material>>({
     model_name: '',
@@ -49,15 +49,11 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
     counts: 0,
     specification: '',
     drawing_no_id: '',
-    drawing_no: {
-      file: null,
-      fileType: ""
-    },
+    drawing_no: { file: null, fileType: "" }, // Ensure this is valid
     root_materials_idroot_materials: '',
   });
+  
   const { theme } = useTheme();
-
-
   const [addRoot, { isSuccess, error }] = useAddRootMutation();
   const [addMaterial, { isSuccess: isSuccessLeaf, error: errorLeaf }] = useAddMaterialMutation();
 
