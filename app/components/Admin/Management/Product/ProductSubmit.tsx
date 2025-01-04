@@ -62,9 +62,10 @@ const ProductSubmit: FC<Props> = (props: Props) => {
             }
             if (linkError) {
                 if ("data" in linkError) {
-                    const linkErrorMessage = linkError.data || "产品添加失败";
-                    toast.error(linkErrorMessage.message);
-                    setErrors(linkErrorMessage.errors);
+                    const errorData = linkError as ErrorResponse;
+                    toast.error(errorData!.data!.message);
+                    setErrors(errorData!.data!.message);
+                    
                 }
             }
         }, [linkSuccess, linkError]);
