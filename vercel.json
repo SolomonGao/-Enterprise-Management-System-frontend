@@ -6,11 +6,6 @@
           "use": "@vercel/next"
         }
       ],
-    "functions": {
-        "api/*.ts": {
-          "runtime": "nodejs16.x"
-        }
-      },
     "routes": [
         {
             "src": "/(.*)",
