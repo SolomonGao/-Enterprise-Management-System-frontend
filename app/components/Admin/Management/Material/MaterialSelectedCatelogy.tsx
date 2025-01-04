@@ -1,5 +1,6 @@
 import { style } from '@/app/styles/style';
 import React, { FC } from 'react'
+import ImageModal from '../../ImageModal';
 
 
 type Material = {
@@ -23,9 +24,16 @@ type Props = {
     materials: Material[];
     selectedMaterialsId: UsedMaterial[];
     setSelectedMaterialsId: (selectedMaterialsId: UsedMaterial[] | ((prev: UsedMaterial[]) => UsedMaterial[])) => void;
+    setSelectedImage: (selectedImage: string | null) => void;
+    selectedImage: string | null;
 }
 
-const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, setSelectedMaterialsId }) => {
+const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, setSelectedMaterialsId, setSelectedImage, selectedImage }) => {
+
+      // 图片模态框
+  const openImageModal = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+  };
 
     const handleCheckboxChange = (id: string, checked: boolean) => {
         setSelectedMaterialsId((prev: UsedMaterial[]) => {
@@ -61,6 +69,7 @@ const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, s
                         <th className={style.tableHead}>规格</th>
                         <th className={style.tableHead}>仓库</th>
                         <th className={style.tableHead}>数量</th>
+                        <th className={style.tableHead}>图纸</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,12 +84,12 @@ const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, s
                                         onChange={(e) => handleCheckboxChange(material.drawing_no_id, e.target.checked)}
                                     />
                                 </td>
-                                <td className="border border-black dark:border-white px-4 py-2  text-center">{material.drawing_no_id}</td>
-                                <td className="border border-black dark:border-white px-4 py-2  text-center">{material.name}</td>
-                                <td className="border border-black dark:border-white px-4 py-2  text-center">{material.model_name}</td>
-                                <td className="border border-black dark:border-white px-4 py-2  text-center">{material.specification}</td>
-                                <td className="border border-black dark:border-white px-4 py-2  text-center">{material.counts}</td>
-                                <td className="border border-black dark:border-white px-4 py-2  text-center">
+                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.drawing_no_id}</td>
+                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.name}</td>
+                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.model_name}</td>
+                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.specification}</td>
+                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.counts}</td>
+                                <td className="border border-black dark:border-white px-4 py-2 text-center">
                                     {selectedItem ? (
                                         <input
                                             type="number"
@@ -99,11 +108,17 @@ const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, s
                                         "-"
                                     )}
                                 </td>
+                                <td
+                                    className="border border-black dark:border-white px-4 py-2 text-center cursor-pointer"
+                                    onClick={() => openImageModal(material.drawing_no_secure_url)}
+                                >
+                                    {material.drawing_no_secure_url ? "查看图纸" : "/"}</td>
                             </tr>
                         );
                     })}
                 </tbody>
             </table>
+            <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />
         </div>
     )
 }

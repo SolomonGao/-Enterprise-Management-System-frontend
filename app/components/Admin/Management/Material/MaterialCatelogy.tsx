@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useUpdateMaterialCountsMutation } from "@/redux/features/material/materialApi";
+import ImageModal from "../../ImageModal";
 
 type Material = {
   model_name: string;
@@ -60,41 +61,9 @@ const MaterialCatelogy: React.FC<Props> = ({ materials, handleUpdateCounts }) =>
 
   return (
     <div>
+
       {/* 图片模态框 */}
-      {selectedImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="relative w-full h-full max-w-4xl max-h-[80vh]">
-            <button
-              className="absolute top-4 right-4 text-white text-xl bg-black bg-opacity-50 p-2 rounded-full z-10"
-              onClick={() => setSelectedImage(null)}
-            >
-              ✕
-            </button>
-            {/* <TransformWrapper>
-  <TransformComponent>
-    {selectedImage ? (
-      <img
-        src={selectedImage.startsWith('data:image') ? selectedImage : `https://res.cloudinary.com/YOUR_CLOUD_NAME/raw/${selectedImage}`}
-        alt="大图"
-        className="object-contain rounded-lg w-full h-auto"
-      />
-    ) : (
-      <p>图片加载失败</p>
-    )}
-  </TransformComponent>
-</TransformWrapper> */}
-            <Image
-              src={selectedImage}
-              alt="大图"
-              fill
-              className="w-full h-full object-contain rounded-lg"
-              priority
-            />
-          </div>
-
-
-        </div>
-      )}
+      <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />
 
       {/* 材料列表 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

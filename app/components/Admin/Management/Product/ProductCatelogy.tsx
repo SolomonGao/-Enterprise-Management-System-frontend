@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useGetMaterialsByProductQuery } from "@/redux/features/product/productApi";
 import Pagination from "@/app/components/Pagination/Pagination";
 import toast from "react-hot-toast";
+import ImageModal from "../../ImageModal";
 
 type Product = {
   idproduct: string;
@@ -18,6 +19,7 @@ type Props = {
 };
 
 const ProductCatalog: React.FC<Props> = ({ products }) => {
+
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -75,26 +77,6 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
 
   return (
     <div>
-      {/* 图片模态框 */}
-      {selectedImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center backdrop-blur-sm z-50">
-          <div className="relative w-full h-full max-w-4xl max-h-[80vh]">
-            <button
-              className="absolute top-4 right-4 text-white text-xl bg-black bg-opacity-50 p-2 rounded-full z-10"
-              onClick={() => setSelectedImage(null)}
-            >
-              ✕
-            </button>
-            <Image
-              src={selectedImage}
-              alt="大图"
-              fill
-              className="object-contain rounded-lg"
-              priority
-            />
-          </div>
-        </div>
-      )}
 
       {/* 产品列表 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -181,8 +163,10 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
                       <tr>
                         <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">零配件名称</th>
                         <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">零配件图号</th>
+                        <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">规格</th>
                         <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">需要数量</th>
                         <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">剩余数量</th>
+                        <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">图纸</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -190,8 +174,15 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
                         <tr key={material.leaf_materials_drawing_no} className="border-t border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                           <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leafMaterial.name}</td>
                           <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leaf_materials_drawing_no}</td>
+                          <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leafMaterial.specification}</td>
                           <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.material_counts}</td>
                           <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leafMaterial.counts}</td>
+                          <td
+                            className="px-4 py-2 text-gray-700 dark:text-gray-200 cursor-pointer"
+                            onClick={() => openImageModal(material.leafMaterial.drawing_no_secure_url)}
+                          >
+                            {material.leafMaterial.drawing_no_secure_url ? "查看图纸" : "/"}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -212,6 +203,8 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
           </div>
         </div>
       )}
+      {/* 图片模态框 */}
+      <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />
     </div>
   );
 };

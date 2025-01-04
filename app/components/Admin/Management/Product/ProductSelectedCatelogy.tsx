@@ -1,9 +1,14 @@
 import { style } from '@/app/styles/style';
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
+import ImageModal from '../../ImageModal';
 
 
 type Product = {
     idproduct: string;
+    model_name: string;
+    pump_model: string;
+    drawing_no_id: string;
+    drawing_no_secure_url: string;
 };
 
 type UsedProducts = {
@@ -18,6 +23,12 @@ type Props = {
 }
 
 const MaterialSelectedCatelogy: FC<Props> = ({ products, selectedProductsId, setselectedProductsId }) => {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    // 图片模态框
+    const openImageModal = (imageUrl: string) => {
+        setSelectedImage(imageUrl);
+    };
 
     const handleCheckboxChange = (id: string, checked: boolean) => {
         setselectedProductsId((prev: UsedProducts[]) => {
@@ -48,7 +59,10 @@ const MaterialSelectedCatelogy: FC<Props> = ({ products, selectedProductsId, set
                     <tr className="bg-blue-300 dark:bg-gray-700">
                         <th className={style.tableHead}>选择</th>
                         <th className={style.tableHead}>产品名称</th>
+                        <th className={style.tableHead}>图号ID</th>
+                        <th className={style.tableHead}>泵型号</th>
                         <th className={style.tableHead}>数量</th>
+                        <th className={style.tableHead}>图纸</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,6 +78,8 @@ const MaterialSelectedCatelogy: FC<Props> = ({ products, selectedProductsId, set
                                     />
                                 </td>
                                 <td className="border border-black dark:border-white px-4 py-2  text-center">{product.idproduct}</td>
+                                <td className="border border-black dark:border-white px-4 py-2  text-center">{product.drawing_no_id}</td>
+                                <td className="border border-black dark:border-white px-4 py-2  text-center">{product.pump_model}</td>
                                 <td className="border border-black dark:border-white px-4 py-2  text-center">
                                     {selectedItem ? (
                                         <input
@@ -83,11 +99,19 @@ const MaterialSelectedCatelogy: FC<Props> = ({ products, selectedProductsId, set
                                         "-"
                                     )}
                                 </td>
+                                <td
+                                    className="px-4 py-2 text-gray-700 dark:text-gray-200 cursor-pointer"
+                                    onClick={() => openImageModal(product.drawing_no_secure_url)}
+                                >
+                                    {product.drawing_no_secure_url ? "查看图纸" : "/"}
+                                </td>
                             </tr>
                         );
                     })}
                 </tbody>
             </table>
+            {/* 图片模态框 */}
+            <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />
         </div>
     )
 }

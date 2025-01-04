@@ -3,6 +3,13 @@ export type Product = {
     quantity: number;
 };
 
+
+export type Material = {
+    name: string;
+    drawing_no_id: string;
+    requiredQuantity: number;
+}
+
 export type Order = {
     _id: string;
     customer: string;
@@ -14,5 +21,6 @@ export type Order = {
     comments: string;
     createdAt: string;
     updatedAt: string;
+    requiredMaterials: Material[];
     __v: number;
 };

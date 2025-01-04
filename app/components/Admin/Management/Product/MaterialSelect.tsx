@@ -20,6 +20,7 @@ type Props = {
 }
 
 const MaterialSelect: FC<Props> = (props: Props) => {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [added, setAdded] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>("");
     const [filters, setFilters] = useState<{ searchBy: string; search?: string; countsRange?: string }>({
@@ -89,7 +90,11 @@ const MaterialSelect: FC<Props> = (props: Props) => {
                     <MaterialSelectedCatelogy
                         materials={filteredData?.data || []}
                         selectedMaterialsId={props.selectedMaterialsId}
-                        setSelectedMaterialsId={props.setSelectedMaterialsId} />
+                        setSelectedMaterialsId={props.setSelectedMaterialsId}
+                        setSelectedImage={setSelectedImage}
+                        selectedImage={selectedImage}
+                         />
+
                 </div>
                 {filteredData?.totalPages > 0 && (
                     <div className="mt-5">

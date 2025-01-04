@@ -34,9 +34,9 @@ export const orderApi = apiSlice.injectEndpoints({
             })
         }),
         getRequiredMaterials: builder.query({
-            query: ({ products }) => {
+            query: ({ materials }) => {
                 const params = new URLSearchParams();
-                params.append('products', JSON.stringify(products));
+                params.append('materials', JSON.stringify(materials));
 
                 return {
                     url: `/order/get-required-materials?${params.toString()}`,

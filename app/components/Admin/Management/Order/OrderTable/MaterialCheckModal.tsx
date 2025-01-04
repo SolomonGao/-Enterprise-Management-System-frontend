@@ -77,7 +77,7 @@ const MaterialCheckModal: React.FC<Props> = ({ materials, onConfirm, onClose, is
             确认
           </button>
         ) : (
-          <p className="mt-4 text-red-500">库存不足，无法确认生产</p>
+          <p className="mt-4 text-red-500">库存不足，请采购零配件</p>
         )}
       </div>
     </div>

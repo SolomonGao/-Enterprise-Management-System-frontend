@@ -27,7 +27,7 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const [changeStatus, { isLoading: isUpdating }] = useChangeStatusMutation();
-  const [triggerGetMaterials, { isLoading, error: errorReq }] = useLazyGetRequiredMaterialsQuery();
+  const [triggerGetMaterials, { isSuccess: getMatSucc, isLoading, error: errorReq }] = useLazyGetRequiredMaterialsQuery();
   const [UseRequiredMaterials, { isSuccess: succUse, error: errUse }] = useUseRequiredMaterialsMutation();
 
   const handleToggleShowCompleted = () => {
@@ -38,7 +38,7 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
   const handleGetMaterials = async (order: Order) => {
     try {
       setSelectedOrder(order);
-      const response = await triggerGetMaterials({ products: order.products });
+      const response = await triggerGetMaterials({ materials: order.requiredMaterials });
       setMaterials(response.data.data);
       setIsModalOpen(true);
     } catch (err) {
@@ -58,7 +58,7 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
 
       if (materialResponse && materialResponse.data.success) {
         // 如果更新成功，继续执行第二个操作: 更新订单状态
-        await handleStatusChange(selectedOrder._id, '生产中', selectedOrder.__v);
+        await handleStatusChange(selectedOrder._id, '待发货', selectedOrder.__v);
 
         // 关闭模态框
         setIsModalOpen(false);
@@ -101,8 +101,6 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
     }
   }, [error]);
 
-
-
   useEffect(() => {
     if (errorReq) {
       if ("data" in errorReq) {
@@ -113,6 +111,17 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
       }
     }
   }, [errorReq]);
+  
+  useEffect(() => {
+    if (errUse) {
+      if ("data" in errUse) {
+        const errorData = errUse as any;
+        toast.error(errorData.data.message);
+      } else {
+        console.log("An error occured: ", errUse);
+      }
+    }
+  }, [errUse]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -201,7 +210,7 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">创建时间</th>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">产品</th>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">剩余天数</th>
-            <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium ">装配生产</th>
+            <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium ">装配出货</th>
             <th className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">状态</th>
           </tr>
         </thead>

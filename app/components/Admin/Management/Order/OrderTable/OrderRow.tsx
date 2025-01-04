@@ -53,8 +53,8 @@ const OrderRow: React.FC<Props> = ({
     if (currentStatus === "初始" || currentStatus === "准备配件中") {
       return ["初始", "准备配件中"];
     }
-    if (currentStatus === "生产中" || currentStatus === "待发货" || currentStatus === "发货中") {
-      return ["生产中", "待发货", "发货中"];
+    if ( currentStatus === "待发货" || currentStatus === "发货中") {
+      return ["待发货", "发货中"];
     }
     return ["已完成"];
   };
@@ -135,7 +135,7 @@ const OrderRow: React.FC<Props> = ({
           <td className="px-4 py-2 font-medium">已完成</td>
         )}
         <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">
-          {['生产中', '待发货', '发货中'].includes(order.status) ? (
+          {['待发货', '发货中'].includes(order.status) ? (
             <button
               onClick={() => setShowConfirm(true)}
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 transition duration-300"
@@ -149,7 +149,7 @@ const OrderRow: React.FC<Props> = ({
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300"
               disabled={isLoading}
             >
-              生产
+              出库
             </button>
           )}
         </td>
