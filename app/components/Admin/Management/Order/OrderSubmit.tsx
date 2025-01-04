@@ -46,7 +46,7 @@ const ProductSubmit: FC<Props> = (props: Props) => {
         if (error) {
             if ("data" in error) {
                 const errorData = error as ErrorResponse;
-                toast.error(errorData!.data!.message);
+                toast.error(errorData.data!.message);
             }
         }
     }, [isSuccess, error]);

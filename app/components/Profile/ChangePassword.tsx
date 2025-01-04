@@ -7,6 +7,7 @@ import { style } from "../../styles/style";
 import toast from "react-hot-toast";
 import { useChangePasswordMutation } from "../../../redux/features/user/userApi"; // Assuming you have the mutation setup for password change
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
+import { ErrorResponse } from "@/app/utils/types";
 
 type Props = {
   active: number;
@@ -16,7 +17,7 @@ type Props = {
 const schema = Yup.object().shape({
   currentPassword: Yup.string().required("请输入您的当前密码").min(6, "密码长度至少为6个字符"),
   newPassword: Yup.string().required("请输入新密码").min(6, "密码长度至少为6个字符"),
-  confirmPassword: Yup.string().oneOf([Yup.ref('newPassword'), null], "确认密码必须与新密码匹配").required("请输入确认密码"),
+  confirmPassword: Yup.string().oneOf([Yup.ref('newPassword'), undefined], "确认密码必须与新密码匹配").required("请输入确认密码"),
 });
 
 const ChangePassword: FC<Props> = ({ active, user }) => {
@@ -43,8 +44,8 @@ const ChangePassword: FC<Props> = ({ active, user }) => {
     }
     if (error) {
       if ("data" in error) {
-        const errorMessage = error.data || "密码更改失败";
-        toast.error(errorMessage.message);
+        const errorData = error as ErrorResponse;
+        toast.error(errorData.data!.message);
         setIsSubmitting(false);
       }
 
