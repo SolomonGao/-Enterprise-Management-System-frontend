@@ -37,6 +37,7 @@ const ProductSubmit: FC<Props> = (props: Props) => {
                     toast.error(errorData!.data!.message);
                 }
             }
+        }
     }, [isSuccess, error]);
 
         // 在组件渲染后打印 productInfo
