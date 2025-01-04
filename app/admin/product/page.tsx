@@ -7,13 +7,7 @@ import DashboardHeader from '@/app/components/Admin/DashboardHeader';
 import Product from '../../components/Admin/Management/Product/Product';
 
 
-
-
-type Props = {
-  children?: React.ReactNode;
-}
-
-const page: FC<Props> = () => {
+const Page: FC = () => {
 
 
   return (
@@ -47,4 +41,4 @@ const page: FC<Props> = () => {
   );
 };
 
-export default page
+export default Page;

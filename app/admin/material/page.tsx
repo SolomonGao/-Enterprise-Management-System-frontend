@@ -40,4 +40,4 @@ const Page: FC = () => {
   );
 };
 
-export default Page
+export default Page;
