@@ -38,7 +38,7 @@ const ForgetPassword: FC<Props> = (props: Props) => {
     useEffect(() => {
         if (verifySuccess) {
             toast.success("验证成功，请输入新密码");
-            setToken(data.token);
+            
             setIsEmailSent(false);
             setIsTokenInputVisible(false);
             setIsPasswordInputVisible(true);
@@ -83,6 +83,7 @@ const ForgetPassword: FC<Props> = (props: Props) => {
             } else {
                 // token 验证
                 await triggerVerify({ email, token }).unwrap();
+                setToken(token);
             }
         },
     });
