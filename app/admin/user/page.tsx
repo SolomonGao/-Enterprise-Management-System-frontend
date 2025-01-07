@@ -4,7 +4,7 @@ import AdminSidebar from '@/app/components/Admin/Sidebar/AdminSidebar';
 import Heading from '@/app/utils/Heading';
 import RequireRole from '@/app/hooks/RequireRole';
 import DashboardHeader from '@/app/components/Admin/DashboardHeader';
-import DashBoardHero from '../components/Admin/DashBoardHero';
+import Product from '../../components/Admin/Management/Product/Product';
 
 
 const Page: FC = () => {
@@ -14,7 +14,7 @@ const Page: FC = () => {
     <RequireRole allowedRoles={["管理"]}>
       <div>
         <Heading
-          title="主页"
+          title="用户管理"
           description="..."
           keywords="..."
         />
@@ -25,9 +25,11 @@ const Page: FC = () => {
             <AdminSidebar/>
           </div>
           <div className="w-[85%]">  
-              <DashBoardHero
+            <div>
+              <DashboardHeader
+                title="用户管理"
               />
-
+            </div>
             <div className='ml-10 min-h-screen'>
 
             </div>

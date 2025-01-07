@@ -134,24 +134,13 @@ const AdminSidebar: FC<Props> = (props: Props) => {
           icon={<FaUsers />}
           className="text-black dark:text-white"
         >
+          <Link href={"/admin/user"}>
           <MenuItem
-            icon={<TiUserAdd className='text-black dark:text-white' />}
+            icon={<FaUserEdit className='text-black dark:text-white' />}
           >
-            添加用户
+            用户管理
           </MenuItem>
-
-          <MenuItem
-            icon={<FaUserEdit />}
-            className="text-black dark:text-white"
-          >
-            更改用户
-          </MenuItem>
-          <MenuItem
-            icon={<TiUserDelete />}
-            className="text-black dark:text-white"
-          >
-            删除用户
-          </MenuItem>
+          </Link>
         </SubMenu>
 
         <SubMenu
