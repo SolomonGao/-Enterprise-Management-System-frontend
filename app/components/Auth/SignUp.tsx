@@ -7,6 +7,7 @@ import { style } from "../../styles/style";
 import { useRegisterMutation } from "../../../redux/features/auth/authApi"
 import toast from "react-hot-toast";
 import Verification from "./Verfication";
+import { Token } from "@mui/icons-material";
 
 type Props = {
     setRoute: (route: string) => void;
@@ -17,6 +18,7 @@ const schema = Yup.object().shape({
     name: Yup.string().required("请输入您的姓名").min(2, "名字必须是两位以上"),
     email: Yup.string().email("邮箱错误").required("请输入您的邮箱"),
     password: Yup.string().required("请输入邮箱").min(6),
+    token: Yup.string().required("请输入邀请码"),
 });
 
 
@@ -48,11 +50,11 @@ const SignUp: FC<Props> = (props: Props) => {
 
 
     const formik = useFormik({
-        initialValues: { name: "", email: "", password: "" },
+        initialValues: { name: "", email: "", password: "", token: "" },
         validationSchema: schema,
         onSubmit: async ({ name, email, password }) => {
             const data = {
-                name, email, password
+                name, email, password, token
             };
             setIsSubmitting(true);
             await register(data);
@@ -84,62 +86,87 @@ const SignUp: FC<Props> = (props: Props) => {
                                 className={`${errors.name && touched.name && "border-red-500"}
                 ${style.input}`}
                             />
-                            { }
                             {errors.name && touched.name && (
                                 <span className="text-red-500 pt-2 block">{errors.name}</span>
                             )}
                         </div>
-                        <label
-                            className={`${style.label}`}
-                            htmlFor="email">
-                            请输入你的邮箱
-                        </label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={values.email}
-                            onChange={handleChange}
-                            id="email"
-                            placeholder="loginmail"
-                            className={`${errors.email && touched.email && "border-red-500"}
-                ${style.input}`}
-                        />
-                        {errors.email && touched.email && (
-                            <span className="text-red-500 pt-2 block">{errors.email}</span>
-                        )}
-                        <div className="w-full mt-5 relative mb-1">
+                        <div className="mb-4">
                             <label
                                 className={`${style.label}`}
-                                htmlFor="password">
-                                请输入你的密码
+                                htmlFor="email">
+                                请输入你的邮箱
                             </label>
                             <input
-                                type={!show ? "password" : "text"}
-                                name="password"
-                                value={values.password}
+                                type="email"
+                                name="email"
+                                value={values.email}
                                 onChange={handleChange}
-                                id="password"
-                                placeholder="password!@%"
-                                className={`${errors.password && touched.password && "border-red-500"} ${style.input}`}
+                                id="email"
+                                placeholder="loginmail"
+                                className={`${errors.email && touched.email && "border-red-500"}
+                ${style.input}`}
                             />
-                            {!show ? (
-                                <AiOutlineEyeInvisible
-                                    className="absolute bottom-3 right-2 z-1 cursor-pointer"
-                                    size={20}
-                                    onClick={() => setShow(true)} />
-                            ) : (
-                                <AiOutlineEye
-                                    className="absolute bottom-3 right-2 z-1 cursor-pointer"
-                                    size={20}
-                                    onClick={() => setShow(false)} />
+                            {errors.email && touched.email && (
+                                <span className="text-red-500 pt-2 block">{errors.email}</span>
                             )}
-
-
                         </div>
 
-                        {errors.password && touched.password && (
-                            <span className="text-red-500 pt-2 block">{errors.password}</span>
-                        )}
+
+                        <div className="w-full mt-5 relative mb-4">
+                            <div className="relative">
+                                <label
+                                    className={`${style.label}`}
+                                    htmlFor="password">
+                                    请输入你的密码
+                                </label>
+                                <input
+                                    type={!show ? "password" : "text"}
+                                    name="password"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    id="password"
+                                    placeholder="password!@%"
+                                    className={`${errors.password && touched.password && "border-red-500"} ${style.input}`}
+                                />
+                                {!show ? (
+                                    <AiOutlineEyeInvisible
+                                        className="absolute bottom-3 right-2 z-1 cursor-pointer"
+                                        size={20}
+                                        onClick={() => setShow(true)} />
+                                ) : (
+                                    <AiOutlineEye
+                                        className="absolute bottom-3 right-2 z-1 cursor-pointer"
+                                        size={20}
+                                        onClick={() => setShow(false)} />
+                                )}
+                            </div>
+                            <div>
+                                {errors.password && touched.password && (
+                                    <span className="text-red-500 pt-2 block">{errors.password}</span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="mb-4">
+                            <label
+                                className={`${style.label}`}
+                                htmlFor="token">
+                                请输入邀请码
+                            </label>
+                            <input
+                                type="token"
+                                name="token"
+                                value={values.token}
+                                onChange={handleChange}
+                                id="token"
+                                placeholder="token"
+                                className={`${errors.token && touched.token && "border-red-500"}
+                ${style.input}`}
+                            />
+                            {errors.token && touched.token && (
+                                <span className="text-red-500 pt-2 block">{errors.token}</span>
+                            )}
+                        </div>
                         <div>
                             <div className="w-full mt-5">
                                 <input
