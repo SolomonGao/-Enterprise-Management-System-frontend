@@ -7,7 +7,6 @@ import { style } from "../../styles/style";
 import { useRegisterMutation } from "../../../redux/features/auth/authApi"
 import toast from "react-hot-toast";
 import Verification from "./Verfication";
-import { Token } from "@mui/icons-material";
 
 type Props = {
     setRoute: (route: string) => void;
@@ -52,9 +51,9 @@ const SignUp: FC<Props> = (props: Props) => {
     const formik = useFormik({
         initialValues: { name: "", email: "", password: "", token: "" },
         validationSchema: schema,
-        onSubmit: async ({ name, email, password }) => {
+        onSubmit: async ({ name, email, password, token }) => {
             const data = {
-                name, email, password, token
+                name, email, password, token    
             };
             setIsSubmitting(true);
             await register(data);
