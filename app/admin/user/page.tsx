@@ -4,7 +4,7 @@ import AdminSidebar from '@/app/components/Admin/Sidebar/AdminSidebar';
 import Heading from '@/app/utils/Heading';
 import RequireRole from '@/app/hooks/RequireRole';
 import DashboardHeader from '@/app/components/Admin/DashboardHeader';
-import Product from '../../components/Admin/Management/Product/Product';
+import User from '../../components/Admin/Management/User/User';
 
 
 const Page: FC = () => {
@@ -31,7 +31,7 @@ const Page: FC = () => {
               />
             </div>
             <div className='ml-10 min-h-screen'>
-
+              <User/>
             </div>
           </div>
         </div>
