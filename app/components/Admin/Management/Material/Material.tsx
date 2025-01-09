@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import AddRootMaterial from "@/app/components/Admin/Management/Material/AddRootMaterial";
 import { useGetAllRootQuery, useGetMaterialsByRootQuery } from "@/redux/features/material/materialApi";
-import HeaderBar from "./HeadBarMaterial";
+import HeaderBar from "../Headbar";
 import { Typography } from "@mui/material";
 import MaterialHero from "./MaterialHero";
 import toast from "react-hot-toast";
@@ -45,14 +45,14 @@ const Material = (props: Props) => {
     }
   }, [filteredData]);
 
-    // 更新数量的回调函数
-    const handleUpdateCounts = (id: string, newCounts: number) => {
-      setMaterials((prevMaterials) => {
-        return prevMaterials.map((material) =>
-          material.drawing_no_id === id ? { ...material, counts: newCounts } : material
-        );
-      });
-    };
+  // 更新数量的回调函数
+  const handleUpdateCounts = (id: string, newCounts: number) => {
+    setMaterials((prevMaterials) => {
+      return prevMaterials.map((material) =>
+        material.drawing_no_id === id ? { ...material, counts: newCounts } : material
+      );
+    });
+  };
 
   useEffect(() => {
     if (error) {
@@ -97,6 +97,12 @@ const Material = (props: Props) => {
         <HeaderBar
           active={active}
           setActive={setActive}
+          navItems={{
+            items: [
+              { id: 1, label: '主页' },
+              { id: 2, label: '监控' },
+            ]
+          }}
         />
 
         <div>

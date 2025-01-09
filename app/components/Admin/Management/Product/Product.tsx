@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import HeaderBar from './HeadBarProduct';
+import HeaderBar from '../Headbar';
 import CreateProoduct from '../Product/CreateProduct'
 import ProductHero from './ProductHero'
 import { useGetProductsQuery } from '@/redux/features/product/productApi';
@@ -40,7 +40,7 @@ const Product = (props: Props) => {
             setAdded(false);
             refetch();
         }
-        
+
 
         return () => {
 
@@ -53,7 +53,15 @@ const Product = (props: Props) => {
                 <div>
                     <HeaderBar
                         active={active}
-                        setActive={setActive} />
+                        setActive={setActive}
+                        navItems={{
+                            items: [
+                                { id: 1, label: '主页' },
+                                { id: 2, label: '添加' },
+                                { id: 3, label: '监控' },
+                            ]
+                        }}
+                    />
                 </div>
                 <div>
                     {
@@ -74,8 +82,8 @@ const Product = (props: Props) => {
                     {
                         active === 2 && (
                             <div>
-                                <CreateProoduct 
-                                setAdded={setAdded}
+                                <CreateProoduct
+                                    setAdded={setAdded}
                                 />
                             </div>
                         )
