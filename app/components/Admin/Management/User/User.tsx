@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import HeaderBar from '../Headbar'
+import RoleManager from '@/app/components/Profile/RoleManager';
+import { useSelector } from 'react-redux';
+import AddUser from './AddUser';
 
 type Props = {}
 
 const User = (props: Props) => {
   const [active, setActive] = useState(1);
+  const { user } = useSelector((state: any) => state.auth);
 
 
   return (
@@ -17,8 +21,8 @@ const User = (props: Props) => {
             navItems={{
               items: [
                 { id: 1, label: '主页' },
-                { id: 2, label: '添加' },
-                { id: 3, label: '监控' },
+                { id: 2, label: '添加用户' },
+                { id: 3, label: '删除用户' },
               ]
             }}
           />
@@ -26,7 +30,22 @@ const User = (props: Props) => {
         <div>
           {
             active === 1 && (
-              <div></div>
+              <div className='w-full h-full bg-transparent'>
+                <RoleManager
+                  active={active}
+                  user={user}
+                />
+              </div>
+            )
+          }
+
+{
+            active === 2 && (
+              <div className='w-full h-full bg-transparent'>
+                <AddUser
+                  user={user}
+                />
+              </div>
             )
           }
         </div>

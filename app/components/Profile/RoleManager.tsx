@@ -37,9 +37,14 @@ const RoleManager: FC<Props> = (props: Props) => {
 
     return (
         <RequireRole allowedRoles={["管理"]}>
-            <div className="px-4 py-6">
+            <div className="p-6 min-h-screen bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+                <div className="dark:text-white text-black mb-2">
+                    <p className="text-lg font-semibold tracking-wide uppercase dark:text-gray-200 text-gray-800 border-b-2 dark:border-gray-300 border-gray-600 pb-1">
+                        用户管理
+                    </p>
+                </div>
                 {/* 用户列表 */}
-                <div className="overflow-x-auto shadow-lg border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600">
+                <div className="mt-5 overflow-x-auto shadow-lg border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600">
                     <table className="min-w-full text-sm text-gray-700 dark:text-gray-300">
                         <thead className="bg-gray-200 dark:bg-gray-700">
                             <tr>

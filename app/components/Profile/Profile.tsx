@@ -4,9 +4,8 @@ import SideBarProfile from "./SideBarProfile";
 import { useLogoutMutation } from '@/redux/features/auth/authApi';
 import toast from 'react-hot-toast';
 import ProfileInfo from "./ProfileInfo";
-import RoleManager from "./RoleManager"
 import ChangePassword from "./ChangePassword"
-import SignUp from '../Auth/SignUp';
+
 
 type Props = {
     user: any;
@@ -92,16 +91,6 @@ const Profile: FC<Props> = ({ user }: Props) => {
                 active === 2 && (
                     <div className='w-full h-full bg-transparent mt-[80px]'>
                         <ChangePassword
-                            active={active}
-                            user={user}
-                        />
-                    </div>
-                )
-            }
-            {
-                active === 3 && (
-                    <div className='w-full h-full bg-transparent mt-[80px]'>
-                        <RoleManager
                             active={active}
                             user={user}
                         />

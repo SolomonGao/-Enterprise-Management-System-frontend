@@ -45,14 +45,14 @@ const SideBarProfile: FC<Props> = ({ user, active, avatar, setActive, logoutHand
                 </h5>
             </div>
 
-            <div className={`w-full flex items-center px-3 py-4 cursor-pointer ${active === 3 ? "bg-black dark:bg-slate-800" : "bg-transparent"}`}
+            {/* <div className={`w-full flex items-center px-3 py-4 cursor-pointer ${active === 3 ? "bg-black dark:bg-slate-800" : "bg-transparent"}`}
                 onClick={() => setActive(3)}
             >
                 <FaUserEdit size={20} className={`dark:text-white text-black ${active === 3 ? "text-white" : ""}`}/>
                 <h5 className={`pl-2 800px:block hidden font-Poppins text-black dark:text-white ${active === 3 ? "text-white" : ""}`}>
                     更改他人权限
                 </h5>
-            </div>
+            </div> */}
 
             {user.role === "管理" && (
                 <Link className={`w-full flex items-center px-3 py-4 cursor-pointer ${active === 4 ? "bg-black dark:bg-slate-800" : "bg-transparent"}`}
