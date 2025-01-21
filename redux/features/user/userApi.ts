@@ -43,13 +43,29 @@ export const userApi = apiSlice.injectEndpoints({
             })
         }),
         verifyResetPasswordToken: builder.query({
-            query: ({token, email}) => ({
+            query: ({ token, email }) => ({
                 url: `user/verify-reset-password-token?token=${token}&email=${email}`,
                 method: "GET",
                 credentials: "include" as const,
             }),
         }),
+        addUser: builder.mutation({
+            query: ({ email }) => ({
+                url: "user/add-user",
+                method: "POST",
+                body: { email },
+                credentials: "include" as const,
+            })
+        })
     })
 })
 
-export const { useUpdateAvatarMutation, useGetAllUsersQuery, useUpdateUserRoleMutation, useEditProfileMutation, useChangePasswordMutation, useLazyVerifyResetPasswordTokenQuery } = userApi;
+export const {
+    useUpdateAvatarMutation,
+    useGetAllUsersQuery,
+    useUpdateUserRoleMutation,
+    useEditProfileMutation,
+    useChangePasswordMutation,
+    useLazyVerifyResetPasswordTokenQuery,
+    useAddUserMutation
+} = userApi;

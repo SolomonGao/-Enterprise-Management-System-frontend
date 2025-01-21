@@ -44,6 +44,7 @@ const User = (props: Props) => {
               <div className='w-full h-full bg-transparent'>
                 <AddUser
                   user={user}
+                  setActive={setActive}
                 />
               </div>
             )
