@@ -24,7 +24,7 @@ const AddUser = (props: Props) => {
 
     useEffect(() => {
         if (isSuccess) {
-            toast.success("发送邀请码成功， 请使用以下邀请码来注册账号");
+            toast.success(data.message);
             setIsAdded(true);
             setInvitationCode(data.invitationCode);
         }
