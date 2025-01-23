@@ -14,7 +14,7 @@ const Page: FC = () => {
     <RequireRole allowedRoles={["管理"]}>
       <div>
         <Heading
-          title="订单管理"
+          title="产品订单管理"
           description="..."
           keywords="..."
         />
@@ -27,7 +27,7 @@ const Page: FC = () => {
           <div className="w-[85%]">
             <div>
               <DashboardHeader
-                title="订单管理"
+                title="产品订单管理"
               />
             </div>
             <div className='ml-10 min-h-screen'>

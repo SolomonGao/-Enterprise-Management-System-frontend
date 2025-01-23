@@ -162,7 +162,7 @@ const AdminSidebar: FC<Props> = (props: Props) => {
               icon={<SiElementor />}
               className="text-black dark:text-white"
             >
-              产品管理
+              产品组装管理
             </MenuItem>
           </Link>
 
@@ -171,16 +171,16 @@ const AdminSidebar: FC<Props> = (props: Props) => {
               icon={<SiElementor />}
               className="text-black dark:text-white"
             >
-              订单管理
+              产品订单管理
             </MenuItem>
           </Link>
 
-          <Link href={"/admin/purchase"}>
+          <Link href={"/admin/purchasing"}>
             <MenuItem
               icon={<SiElementor />}
               className="text-black dark:text-white"
             >
-              采购管理
+              零配件采购管理
             </MenuItem>
           </Link>
         </SubMenu>

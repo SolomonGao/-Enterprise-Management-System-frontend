@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import HeaderBar from '../Headbar'
-import RoleManager from '@/app/components/Profile/RoleManager';
+import RoleManager from '@/app/components/Admin/Management/User/RoleManager';
 import { useSelector } from 'react-redux';
 import AddUser from './AddUser';
 

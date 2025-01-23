@@ -2,7 +2,7 @@
 import RequireRole from '@/app/hooks/RequireRole';
 import { useGetAllUsersQuery, useUpdateUserRoleMutation } from '@/redux/features/user/userApi';
 import React, { FC, useEffect, useState } from 'react';
-import Pagination from '../Pagination/Pagination';
+import Pagination from '../../../Pagination/Pagination';
 import toast from 'react-hot-toast';
 import { style } from '@/app/styles/style';
 
@@ -78,6 +78,11 @@ const RoleManager: FC<Props> = (props: Props) => {
                                                 value="管理"
                                                 className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                                             >管理</option>
+
+<option
+                                                value="采购"
+                                                className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                                            >采购</option>
                                         </select>
                                     </td>
                                 </tr>
