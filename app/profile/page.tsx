@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 interface Props {}
 
-const ProfilePage: FC<Props> = (props: Props) => {
+const Page: FC<Props> = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(6);
   const [route, setRoute] = useState("Login");
@@ -41,4 +41,4 @@ const ProfilePage: FC<Props> = (props: Props) => {
   )
 }
 
-export default ProfilePage;
+export default Page;
