@@ -5,10 +5,11 @@ import Heading from '@/app/utils/Heading';
 import RequireRole from '@/app/hooks/RequireRole';
 import DashboardHeader from '@/app/components/Admin/DashboardHeader';
 import User from '../../components/Admin/Management/User/User';
+import { useSelector } from 'react-redux';
 
 
 const Page: FC = () => {
-
+  const {user} = useSelector((state: any) => state.auth);
 
   return (
     <RequireRole allowedRoles={["管理"]}>

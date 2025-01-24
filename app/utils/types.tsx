@@ -23,6 +23,7 @@ export type MaterialFull = {
     row_materials: string;
     comments: string;
     counts: number;
+    purchasing: number;
     specification: string;
     drawing_no_id: string;
     drawing_no: { file: string | null; fileType: string };

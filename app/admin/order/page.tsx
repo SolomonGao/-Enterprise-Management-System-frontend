@@ -5,10 +5,12 @@ import Heading from '@/app/utils/Heading';
 import RequireRole from '@/app/hooks/RequireRole';
 import DashboardHeader from '@/app/components/Admin/DashboardHeader';
 import Order from '../../components/Admin/Management/Order/Order';
+import { useSelector } from 'react-redux';
 
 
 
 const Page: FC = () => {
+  const {user} = useSelector((state: any) => state.auth);
 
   return (
     <RequireRole allowedRoles={["管理"]}>
@@ -32,6 +34,7 @@ const Page: FC = () => {
             </div>
             <div className='ml-10 min-h-screen'>
               <Order
+              user={user}
               />
             </div>
           </div>

@@ -13,6 +13,7 @@ type Props = {
     setCurrentPage: (page: number) => void;
     isFetching: boolean;
     refetch: () => void;
+    user: any
 }
 
 const OrderHero: FC<Props> = ({
@@ -22,7 +23,9 @@ const OrderHero: FC<Props> = ({
     currentPage,
     setCurrentPage,
     isFetching,
-    refetch, }) => {
+    refetch,
+    user
+}) => {
 
     // 防抖搜索
     const handleFilters = useCallback(
@@ -52,7 +55,7 @@ const OrderHero: FC<Props> = ({
                 </div>
 
                 <div className="mt-5">
-                    <OrderTable orders={filteredData?.data || []} refetch={refetch} />
+                    <OrderTable user={user} orders={filteredData?.data || []} refetch={refetch} />
                 </div>
 
                 {/* 分页组件 */}

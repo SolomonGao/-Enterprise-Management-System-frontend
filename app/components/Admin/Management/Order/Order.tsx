@@ -6,7 +6,9 @@ import CreateOrder from './CreateOrder';
 import { useGetOrdersQuery } from '@/redux/features/order/orderApi';
 import toast from 'react-hot-toast';
 
-type Props = {}
+type Props = {
+  user: any;
+}
 
 const Order: FC<Props> = (props: Props) => {
 
@@ -69,6 +71,7 @@ const Order: FC<Props> = (props: Props) => {
           {active === 1 && (
             <div>
               <OrderHero
+                user={props.user}
                 filteredData={filteredData}
                 filters={filters}
                 setFilters={setFilters}

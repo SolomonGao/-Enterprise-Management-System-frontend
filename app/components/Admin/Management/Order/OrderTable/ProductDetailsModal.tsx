@@ -12,9 +12,20 @@ type Props = {
   isSuccess: boolean;
   currentPage: number;
   isProductLoading: boolean;
+  user: any
+  handlePurchasingMaterial: (id: string, number: number, version: number) => void;
 };
 
-const ProductDetailsModal: React.FC<Props> = ({ selectedProduct, onClose, setCurrentPage, data, isSuccess, currentPage, isProductLoading }) => {
+const ProductDetailsModal: React.FC<Props> = ({
+  selectedProduct,
+  onClose,
+  setCurrentPage,
+  data,
+  isSuccess,
+  currentPage,
+  isProductLoading,
+  handlePurchasingMaterial,
+}) => {
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [purchaseQuantity, setPurchaseQuantity] = useState<number | null>(null);
@@ -33,14 +44,23 @@ const ProductDetailsModal: React.FC<Props> = ({ selectedProduct, onClose, setCur
   const handlePurchase = (material: any) => {
     setSelectedMaterial(material);
     setIsPurchasing(true);
+    setPurchaseQuantity(0);
   };
 
-  const handleSubmitPurchase = () => {
+  const handleSubmitPurchase = async () => {
     if (purchaseQuantity && selectedMaterial) {
-      // 这里可以添加逻辑来处理采购操作，比如发送请求到后端
+      const materialId = selectedMaterial.leaf_materials_drawing_no; // 获取物料 ID
+      const version = selectedMaterial.leafMaterial.version; // 获取物料 ID
+      // 调用 handlePurchasingMaterial 函数进行采购
+      await handlePurchasingMaterial(materialId, purchaseQuantity, version);
       console.log(`采购了 ${purchaseQuantity} 个 ${selectedMaterial.leafMaterial.name}`);
-      setIsPurchasing(false); // 关闭采购输入框
-      setPurchaseQuantity(null); // 清空输入框
+  
+      // 采购完成后，关闭输入框并清空输入
+      setIsPurchasing(false);
+      setPurchaseQuantity(0);
+    } else {
+      // 如果没有填写采购数量，提示用户
+      console.log("请填写有效的采购数量");
     }
   };
 
@@ -93,7 +113,7 @@ const ProductDetailsModal: React.FC<Props> = ({ selectedProduct, onClose, setCur
                         <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leafMaterial.name}</td>
                         <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leaf_materials_drawing_no}</td>
                         <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leafMaterial.specification}</td>
-                        <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.material_counts}/{requiredTotal}</td>
+                        <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.material_counts}/{requiredTotal} (采购中：{material.leafMaterial.purchasing})</td>
                         <td className="px-4 py-2 text-gray-700 dark:text-gray-200">{material.leafMaterial.counts}</td>
                         <td
                           className="px-4 py-2 text-gray-700 dark:text-gray-200 cursor-pointer"
@@ -116,7 +136,7 @@ const ProductDetailsModal: React.FC<Props> = ({ selectedProduct, onClose, setCur
                         {!isLowStock && (
                           <td className="px-4 py-2 text-gray-700 dark:text-gray-200">
                             /
-                        </td>
+                          </td>
                         )}
                       </tr>
                     );

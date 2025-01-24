@@ -4,21 +4,23 @@ import FilterSection from './FilterSection';
 import OrderRow from './OrderRow';
 import ProductDetailsModal from './ProductDetailsModal';
 import { Order, Product } from '../../../../../utils/types';
-import { useChangeStatusMutation, useLazyGetRequiredMaterialsQuery, useUseRequiredMaterialsMutation } from '@/redux/features/order/orderApi';
+import { useChangeStatusMutation, useLazyGetRequiredMaterialsQuery, useUpdateRequiredMaterialsMutation } from '@/redux/features/order/orderApi';
 import toast from 'react-hot-toast';
-import { useGetMaterialsByProductQuery } from '@/redux/features/product/productApi';
+import { useGetMaterialsByProductQuery, useLazyGetMaterialsByProductQuery } from '@/redux/features/product/productApi';
 import MaterialCheckModal from './MaterialCheckModal';
+import { useSelector } from 'react-redux';
+import { usePurchasingMaterialMutation } from '@/redux/features/pruchasing/purchasingApi';
 
 type Props = {
   orders: Order[];
   refetch: () => void;
+  user: any;
 };
 
-const OrderTable: FC<Props> = ({ orders, refetch }) => {
+const OrderTable: FC<Props> = ({ orders, refetch, user }) => {
 
   const [filterDays, setFilterDays] = useState<number | null>(null);
   const [showCompleted, setShowCompleted] = useState(true); // 控制是否显示已完成订单
-
 
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -28,7 +30,46 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
 
   const [changeStatus, { isLoading: isUpdating }] = useChangeStatusMutation();
   const [triggerGetMaterials, { isSuccess: getMatSucc, isLoading, error: errorReq }] = useLazyGetRequiredMaterialsQuery();
-  const [UseRequiredMaterials, { isSuccess: succUse, error: errUse }] = useUseRequiredMaterialsMutation();
+  const [updateRequiredMaterials, { isSuccess: succUse, error: errUse }] = useUpdateRequiredMaterialsMutation();
+  const [purchasingMaterial, { isSuccess: succPurchase, error: errorPurchase }] = usePurchasingMaterialMutation()
+
+  const [isProductLoading, setIsProductLoading] = useState(false); // 新增 loading 状态
+  const [currentPage, setCurrentPage] = useState(1);
+  const [triggerGetMaterialsByP, { data, isSuccess, error }] = useLazyGetMaterialsByProductQuery();
+  // const { data: newData, isSuccess: isSuccessNew, error: ca} = useGetMaterialsByProductQuery(
+  //   {
+  //     idProduct: selectedProduct?.id || "",
+  //     page: currentPage,
+  //   },
+  //   { skip: !selectedProduct?.id }
+  // );
+
+  useEffect(() => {
+    // 每当 selectedProduct 改变时，重新触发查询
+    if (selectedProduct?.id) {
+      triggerGetMaterialsByP({ idProduct: selectedProduct?.id, page: currentPage })
+    }
+    if (selectedOrder !== null) {
+      triggerGetMaterials({ materials: selectedOrder.requiredMaterials })
+    }
+  }, [selectedProduct, succPurchase]);
+
+
+  // useEffect(() => {
+  //   if (succUse) {
+  //     getMaterialRefetch()
+  //   }
+  // })
+
+
+  const handlePurchasingMaterial = async (id: string, number: number, version: number) => {
+    try {
+      const response = await purchasingMaterial({ id, number, version });
+    } catch (err) {
+      console.error('Error handle purchasing material', err);
+    }
+
+  }
 
   const handleToggleShowCompleted = () => {
     setShowCompleted((prev) => !prev);
@@ -54,7 +95,7 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
     if (!selectedOrder) return;
     try {
       // 第一个操作: 执行所需材料更新
-      const materialResponse = await UseRequiredMaterials({ materials });
+      const materialResponse = await updateRequiredMaterials({ materials });
 
       if (materialResponse && materialResponse.data.success) {
         // 如果更新成功，继续执行第二个操作: 更新订单状态
@@ -71,17 +112,6 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
       console.error('发生错误:', error);
     }
   };
-
-
-  const [isProductLoading, setIsProductLoading] = useState(false); // 新增 loading 状态
-  const [currentPage, setCurrentPage] = useState(1);
-  const { data, isSuccess, error } = useGetMaterialsByProductQuery(
-    {
-      idProduct: selectedProduct?.id || "",
-      page: currentPage,
-    },
-    { skip: !selectedProduct?.id }
-  );
 
 
   useEffect(() => {
@@ -111,7 +141,7 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
       }
     }
   }, [errorReq]);
-  
+
   useEffect(() => {
     if (errUse) {
       if ("data" in errUse) {
@@ -241,6 +271,8 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
         isSuccess={isSuccess}
         currentPage={currentPage}
         isProductLoading={isProductLoading}
+        user={user}
+        handlePurchasingMaterial={handlePurchasingMaterial}
       />
       <>
         {isModalOpen && (
@@ -249,6 +281,8 @@ const OrderTable: FC<Props> = ({ orders, refetch }) => {
             onConfirm={handleConfirmProduction}
             onClose={() => setIsModalOpen(false)}
             isLoading={isLoading}
+            user={user}
+            handlePurchasingMaterial={handlePurchasingMaterial}
           />
         )}
       </>

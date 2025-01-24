@@ -132,7 +132,7 @@ const OrderRow: React.FC<Props> = ({
             {remainingDays}
           </td>
         ) : (
-          <td className="px-4 py-2 font-medium">已完成</td>
+          <td className="px-4 py-2 text-gray-600 dark:text-white">已完成</td>
         )}
         <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">
           {['待发货', '发货中'].includes(order.status) ? (
@@ -143,6 +143,13 @@ const OrderRow: React.FC<Props> = ({
             >
               完成
             </button>
+          ) : order.status === "已完成" ? (
+            <button
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 transition duration-300"
+              disabled
+            >
+              结束
+              </button>
           ) : (
             <button
               onClick={() => { handleGetMaterials(order) }}

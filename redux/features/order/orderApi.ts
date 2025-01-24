@@ -45,7 +45,7 @@ export const orderApi = apiSlice.injectEndpoints({
                 };
             }
         }),
-        useRequiredMaterials: builder.mutation({
+        updateRequiredMaterials: builder.mutation({
             query: ({ materials }) => ({
                 url: '/order/use-required-materials',
                 method: 'PUT',
@@ -62,6 +62,6 @@ export const {
     useChangeStatusMutation,
     useGetRequiredMaterialsQuery,
     useLazyGetRequiredMaterialsQuery,
-    useUseRequiredMaterialsMutation,
+    useUpdateRequiredMaterialsMutation,
     
 } = orderApi;

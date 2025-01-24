@@ -50,4 +50,10 @@ export const productApi = apiSlice.injectEndpoints({
     }),
 })
 
-export const { useAddProductMutation, useProductToMaterialMutation, useGetProductsQuery, useGetMaterialsByProductQuery } = productApi;
+export const { 
+    useAddProductMutation, 
+    useProductToMaterialMutation, 
+    useGetProductsQuery, 
+    useGetMaterialsByProductQuery,
+    useLazyGetMaterialsByProductQuery,
+ } = productApi;

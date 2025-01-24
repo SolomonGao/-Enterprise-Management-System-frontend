@@ -6,9 +6,11 @@ import RequireRole from '@/app/hooks/RequireRole';
 import Heading from '@/app/utils/Heading';
 import React, { FC } from 'react'
 import Purchasing from '../../components/Admin/Management/Purchasing/Purchasing'
+import { useSelector } from 'react-redux';
 
 
 const Page: FC = () => {
+    const {user} = useSelector((state: any) => state.auth);
 
     return (
         <RequireRole allowedRoles={["管理", "采购"]}>

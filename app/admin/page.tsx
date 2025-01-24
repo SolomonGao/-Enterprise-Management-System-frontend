@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 import AdminSidebar from '@/app/components/Admin/Sidebar/AdminSidebar';
 import Heading from '@/app/utils/Heading';
 import RequireRole from '@/app/hooks/RequireRole';
-import DashboardHeader from '@/app/components/Admin/DashboardHeader';
 import DashBoardHero from '../components/Admin/DashBoardHero';
 
 
