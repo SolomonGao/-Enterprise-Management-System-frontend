@@ -96,11 +96,11 @@ const MaterialCatelogy: React.FC<Props> = ({ materials, handleUpdateCounts }) =>
               className={`mt-4 space-y-2 ${expandedIds.includes(material.drawing_no_id) || "md:block hidden"
                 }`}
             >
-              <p className="text-gray-700 dark:text-gray-300">
-                所属产品: {material.model_name}
+              <p className="text-gray-900 dark:text-gray-300">
+                图纸号(ID): {material.drawing_no_id}
               </p>
               <p className="text-gray-700 dark:text-gray-300">
-                型号: {material.drawing_no_id}
+                所属产品: {material.model_name}
               </p>
               <p className="text-gray-700 dark:text-gray-300">
                 原料种类: {material.row_materials}
