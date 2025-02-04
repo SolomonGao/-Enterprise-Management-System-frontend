@@ -16,9 +16,6 @@ const Page: FC<Props> = (props: Props) => {
   const [route, setRoute] = useState("Login");
   const { user } = useSelector((state: any) => state.auth);
 
-  if (!user) {
-    redirect("/");
-  }
   return (
     <div className=''>
       <Heading
