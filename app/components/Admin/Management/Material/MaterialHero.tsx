@@ -6,6 +6,12 @@ import Pagination from "../../../Pagination/Pagination";
 import { Typography } from "@mui/material";
 import { debounce } from "lodash";
 
+interface DataItem {
+  idroot_material: string;
+  root_name: string;
+  // 其他字段...
+}
+
 type MaterialHeroProps = {
   data: any;
   materials: any;
@@ -65,10 +71,10 @@ const MaterialHero: React.FC<MaterialHeroProps> = ({
       {/* 分类下拉菜单 */}
       <div className="mt-5">
         <Dropdown
-          options={Array.isArray(data) ? data.map((item) => item) : []}
+          options={Array.isArray(data?.data) ? data.data.map((item: DataItem) => item) : []}
           value={selectedCategory}
           onChange={setSelectedCategory}
-          disableAll={false}
+          disableAll={true}
         />
       </div>
 
