@@ -7,6 +7,8 @@ import { Toaster } from "react-hot-toast";
 import { Providers } from "./Provider";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Loader from "./components/Loader/Loader";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor } from "@/redux/store";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -30,7 +32,9 @@ export default function RootLayout({
       <body className={`${poppins.variable} ${josefin.variable} min-h-screen !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}>
         <Providers>
           <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem>
+          <PersistGate loading={null} persistor={persistor}>
             <Custom>{children}</Custom>
+            </PersistGate>
             <Toaster position="top-center" reverseOrder={false} />
           </ThemeProvider>
         </Providers>

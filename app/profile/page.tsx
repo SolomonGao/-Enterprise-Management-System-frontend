@@ -7,17 +7,15 @@ import Profile from '../components/Profile/Profile'
 import { useSelector } from 'react-redux';
 
 
-interface Props {}
-
-const Page: FC<Props> = (props: Props) => {
+const Page: FC = () => {
   const [open, setOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(6);
   const [route, setRoute] = useState("Login");
   const {user} = useSelector((state: any) => state.auth);
 
   return (
+    <Protected>
     <div className=''>
-      <Protected>
         <Heading
           title={`-${user.name} 用户中心-`}
           description="test test"
@@ -36,8 +34,8 @@ const Page: FC<Props> = (props: Props) => {
         >
 
         </Profile>
-      </Protected>
     </div>
+    </Protected>
   )
 }
 
