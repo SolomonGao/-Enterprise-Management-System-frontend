@@ -8,9 +8,11 @@ interface ProtectedProps{
     children: React.ReactNode;
 }
 
-export default function Protected({children}: ProtectedProps) {
+const Protected = ({children}: ProtectedProps) => {
     const isAuthenticated = userAuth();
     console.log(isAuthenticated)
 
     return isAuthenticated ? children : redirect("/");
 }
+
+export default Protected
