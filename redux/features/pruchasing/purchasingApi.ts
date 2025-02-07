@@ -6,7 +6,7 @@ export const purchasingApi = apiSlice.injectEndpoints({
         purchasingMaterial: builder.mutation({
             query: ({id, number, version}) => ({
                 url: 'purchasing/purchasing-material',
-                method: 'PUT',
+                method: 'POST',
                 body: {id, number, version},
                 credentials: "include" as const,
             }),
