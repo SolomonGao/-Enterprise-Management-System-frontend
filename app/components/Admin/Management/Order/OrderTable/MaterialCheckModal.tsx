@@ -16,7 +16,6 @@ type Props = {
   onClose: () => void;
   isLoading: boolean; // 控制加载状态
   user: any;
-  handlePurchasingMaterial: (id: string, number: number, version: number) => void;
 };
 
 const MaterialCheckModal: React.FC<Props> = ({
@@ -25,7 +24,6 @@ const MaterialCheckModal: React.FC<Props> = ({
   onClose,
   isLoading,
   user,
-  handlePurchasingMaterial,
 }) => {
   const [canConfirm, setCanConfirm] = useState(false);
   const [purchaseQuantity, setPurchaseQuantity] = useState<number | null>(null);

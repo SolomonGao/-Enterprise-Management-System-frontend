@@ -33,7 +33,7 @@ const Page: FC = () => {
                             />
                         </div>
                         <div className='ml-10 min--screen'>
-                            <Purchasing />
+                            <Purchasing user={user} />
                         </div>
                     </div>
                 </div>

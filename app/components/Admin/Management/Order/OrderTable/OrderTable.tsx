@@ -62,9 +62,9 @@ const OrderTable: FC<Props> = ({ orders, refetch, user }) => {
   // })
 
 
-  const handlePurchasingMaterial = async (id: string, number: number, version: number) => {
+  const handlePurchasingMaterial = async (id: string, number: number, version: number, orderDeadline: number) => {
     try {
-      const response = await purchasingMaterial({ id, number, version });
+      const response = await purchasingMaterial({ id, number, version, orderDeadline });
     } catch (err) {
       console.error('Error handle purchasing material', err);
     }
@@ -282,7 +282,6 @@ const OrderTable: FC<Props> = ({ orders, refetch, user }) => {
             onClose={() => setIsModalOpen(false)}
             isLoading={isLoading}
             user={user}
-            handlePurchasingMaterial={handlePurchasingMaterial}
           />
         )}
       </>

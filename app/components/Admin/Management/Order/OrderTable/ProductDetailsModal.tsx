@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Product } from '../../../../../utils/types';
 import Pagination from '@/app/components/Pagination/Pagination';
 import ImageModal from '../../../ImageModal';
+import toast from 'react-hot-toast';
 
 type Props = {
   selectedProduct: Product | null;
@@ -13,7 +14,7 @@ type Props = {
   currentPage: number;
   isProductLoading: boolean;
   user: any
-  handlePurchasingMaterial: (id: string, number: number, version: number) => void;
+  handlePurchasingMaterial: (id: string, number: number, version: number, orderDeadline: number) => void;
 };
 
 const ProductDetailsModal: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const ProductDetailsModal: React.FC<Props> = ({
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [purchaseQuantity, setPurchaseQuantity] = useState<number | null>(null);
+  const [orderDeadline, setOrderDeadline] = useState<number | null>(null);
   const [isPurchasing, setIsPurchasing] = useState<boolean>(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
 
@@ -45,22 +47,25 @@ const ProductDetailsModal: React.FC<Props> = ({
     setSelectedMaterial(material);
     setIsPurchasing(true);
     setPurchaseQuantity(0);
+    setOrderDeadline(0);
   };
 
   const handleSubmitPurchase = async () => {
-    if (purchaseQuantity && selectedMaterial) {
+    if (purchaseQuantity && selectedMaterial && orderDeadline) {
       const materialId = selectedMaterial.leaf_materials_drawing_no; // 获取物料 ID
       const version = selectedMaterial.leafMaterial.version; // 获取物料 ID
       // 调用 handlePurchasingMaterial 函数进行采购
-      await handlePurchasingMaterial(materialId, purchaseQuantity, version);
+      await handlePurchasingMaterial(materialId, purchaseQuantity, version, orderDeadline);
+      console.log(orderDeadline)
       console.log(`采购了 ${purchaseQuantity} 个 ${selectedMaterial.leafMaterial.name}`);
   
       // 采购完成后，关闭输入框并清空输入
       setIsPurchasing(false);
       setPurchaseQuantity(0);
+      setOrderDeadline(0);
     } else {
       // 如果没有填写采购数量，提示用户
-      console.log("请填写有效的采购数量");
+      toast.error("请填写有效的采购数量和天数");
     }
   };
 
@@ -175,6 +180,15 @@ const ProductDetailsModal: React.FC<Props> = ({
                 onChange={(e) => setPurchaseQuantity(Number(e.target.value))}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 rounded"
                 placeholder="请输入数量"
+              />
+            </div>
+            <div className="mt-4">
+              <input
+                type="number"
+                value={orderDeadline || ''}
+                onChange={(e) => setOrderDeadline(Number(e.target.value))}
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 rounded"
+                placeholder="请输入期望完成该采购的天数"
               />
             </div>
             <div className="mt-4 flex justify-end">
