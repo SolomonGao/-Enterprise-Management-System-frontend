@@ -40,11 +40,6 @@ const Product = (props: Props) => {
             setAdded(false);
             refetch();
         }
-
-
-        return () => {
-
-        }
     }, [refetch])
 
     return (

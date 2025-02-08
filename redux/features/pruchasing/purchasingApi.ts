@@ -25,11 +25,29 @@ export const purchasingApi = apiSlice.injectEndpoints({
                     credentials: 'include' as const,
                 }
             }
-        })
+        }),
+        startPurchasingMaterial: builder.mutation({
+            query: ({_id, operator, __v}) => ({
+                url: 'purchasing/start-purchasing-material',
+                method: 'POST',
+                body: {_id, operator, __v},
+                credentials: "include" as const,
+            }),
+        }),
+        finishPurchasingMaterial: builder.mutation({
+            query: ({_id, operator, drawing_no_id, purchasedQuantity, __v}) => ({
+                url: 'purchasing/finish-purchasing-material',
+                method: 'POST',
+                body: {_id, operator, drawing_no_id, purchasedQuantity, __v},
+                credentials: "include" as const,
+            }),
+        }),
     }),
 });
 
 export const {
     usePurchasingMaterialMutation,
-    useGetAllPurchasingQuery
+    useGetAllPurchasingQuery,
+    useStartPurchasingMaterialMutation,
+    useFinishPurchasingMaterialMutation,
 } = purchasingApi;

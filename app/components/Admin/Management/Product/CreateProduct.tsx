@@ -97,6 +97,7 @@ const CreateProduct = (props: Props) => {
                             </div>
                             <div className='w-[90%] m-auto block mt-5'>
                                 <ProductSubmit
+                                    setAdded={props.setAdded}
                                     preButton={preButton}
                                     setActive={setActive}
                                     productInfo={productInfo}

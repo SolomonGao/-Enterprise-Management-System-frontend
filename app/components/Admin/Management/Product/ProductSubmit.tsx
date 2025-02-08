@@ -10,6 +10,7 @@ type UsedMaterial = {
 };
 
 type Props = {
+    setAdded: (added: boolean) => void;
     setActive: (active: number) => void;
     preButton: () => void;
     productInfo: any;
@@ -24,7 +25,8 @@ const ProductSubmit: FC<Props> = (props: Props) => {
     const [addProduct, { isSuccess, error }] = useAddProductMutation();
     const [productToMaterial, {isSuccess: linkSuccess, error: linkError}] = useProductToMaterialMutation();
     const [errors, setErrors] = useState("");
-
+    const [isAdding, setIsAdding] = useState(false); // 用于控制按钮禁用
+    
     // 在组件渲染后打印 productInfo
     useEffect(() => {
         if (isSuccess) {
@@ -58,6 +60,8 @@ const ProductSubmit: FC<Props> = (props: Props) => {
                 })
                 props.setSelectedMaterialsId([]);
                 props.setActive(0);
+
+                setIsAdding(false); // 添加成功后恢复按钮状态
                 
             }
             if (linkError) {
@@ -65,17 +69,25 @@ const ProductSubmit: FC<Props> = (props: Props) => {
                     const errorData = linkError as ErrorResponse;
                     toast.error(errorData!.data!.message);
                     setErrors(errorData!.data!.message);
-                    
+                    setIsAdding(false);
                 }
             }
         }, [linkSuccess, linkError]);
 
     const handleAdd = async () => {
+        setIsAdding(true); // 点击添加时禁用按钮
         await addProduct({ productInfo: props.productInfo, selectedImage: props.selectedImage }).unwrap();
+        props.setAdded(true);
+        
     }
 
     const handleAdd2 = async () => {
+        if (isAdding === false) {
+            toast.error("请先点击添加产品");
+            return
+        }
         await productToMaterial({ idProduct: props.productInfo.idProduct, selectedMaterialsId: props.selectedMaterialsId }).unwrap();
+        props.setAdded(false);
     }
     return (
         <div className='w-[90%] m-auto'>
@@ -95,7 +107,7 @@ const ProductSubmit: FC<Props> = (props: Props) => {
                     onClick={handleAdd}
                     sx={{ mt: 2 }}
                 >
-                    添加
+                    添加产品
                 </Button>
 
                 <Button
@@ -104,7 +116,7 @@ const ProductSubmit: FC<Props> = (props: Props) => {
                     onClick={handleAdd2}
                     sx={{ mt: 2 }}
                 >
-                    添加
+                    链接产品
                 </Button>
             </div>
         </div>

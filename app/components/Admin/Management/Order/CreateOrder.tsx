@@ -11,6 +11,7 @@ type Product = {
 
 type Props = {
     setAdded: (added: boolean) => void;
+    refetch: () => void;
 }
 
 const CreateOrder: FC<Props> = (props: Props) => {
@@ -77,7 +78,7 @@ const CreateOrder: FC<Props> = (props: Props) => {
                                 </p>
                             </div>
                             <div className='w-[90%] m-auto block mt-5'>
-                                <OrderSubmit preButton={preButton} setActive={setActive} orderInfo={orderInfo} selectedProductsId={selectedProductsId} setSelectedProductsId={setselectedProductsId} setOrderInfo={setOrderInfo}/>
+                                <OrderSubmit preButton={preButton} setActive={setActive} orderInfo={orderInfo} selectedProductsId={selectedProductsId} setSelectedProductsId={setselectedProductsId} setOrderInfo={setOrderInfo} refetch={props.refetch}/>
                             </div>
                         </div>
                     )

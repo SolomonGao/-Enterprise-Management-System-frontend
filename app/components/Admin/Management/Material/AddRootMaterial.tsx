@@ -25,14 +25,16 @@ type Material = {
 type RootMaterial = {
   idroot_material: string;
   root_name: string;
+  
 }
 
 type Props = {
   options: RootMaterial[];
   setAdded: (added: boolean) => void;
+  refetch: () => void;
 };
 
-const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
+const AddRootMaterial: React.FC<Props> = ({ options, setAdded, refetch }) => {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{ file: string | null; fileType: string }>({
     file: null, // 默认值为空
@@ -61,7 +63,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
   useEffect(() => {
     if (isSuccessLeaf) {
       toast.success('原料添加成功');
-      setAdded(true);
+      refetch();
       // 清空所有原料相关字段
       setMaterialDetails({
         model_name: '',
@@ -89,7 +91,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded }) => {
   useEffect(() => {
     if (isSuccess) {
       toast.success('分类添加成功');
-      setAdded(true);
+      refetch();
       setLoading(false); // 请求完成后解除加载状态
       setMaterialName(''); // 清空分类名称
     }

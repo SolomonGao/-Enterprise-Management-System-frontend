@@ -19,6 +19,7 @@ type Props = {
     selectedProductsId: UsedProducts[];
     setOrderInfo: (orderInfo: any) => void;
     setSelectedProductsId: (selectedProductsId: UsedProducts[]) => void;
+    refetch: () => void;
 }
 
 const ProductSubmit: FC<Props> = (props: Props) => {
@@ -41,6 +42,7 @@ const ProductSubmit: FC<Props> = (props: Props) => {
     
             props.setSelectedProductsId([]);
             props.setActive(0);
+            props.refetch();
     
         }
         if (error) {

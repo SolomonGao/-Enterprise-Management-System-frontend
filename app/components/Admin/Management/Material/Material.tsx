@@ -91,7 +91,9 @@ const Material = (props: Props) => {
         <div className="z-50">
           <AddRootMaterial
             options={Array.isArray(data?.data) ? data.data.map((item: DataItem) => item) : []}
-            setAdded={setAdded} // 传递 setAdded 函数给子组件
+            setAdded={setAdded}
+            refetch={refetch}
+             // 传递 setAdded 函数给子组件
           />
         </div>
         <HeaderBar

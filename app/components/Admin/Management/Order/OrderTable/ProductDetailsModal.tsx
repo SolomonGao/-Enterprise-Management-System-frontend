@@ -56,8 +56,7 @@ const ProductDetailsModal: React.FC<Props> = ({
       const version = selectedMaterial.leafMaterial.version; // 获取物料 ID
       // 调用 handlePurchasingMaterial 函数进行采购
       await handlePurchasingMaterial(materialId, purchaseQuantity, version, orderDeadline);
-      console.log(orderDeadline)
-      console.log(`采购了 ${purchaseQuantity} 个 ${selectedMaterial.leafMaterial.name}`);
+
   
       // 采购完成后，关闭输入框并清空输入
       setIsPurchasing(false);

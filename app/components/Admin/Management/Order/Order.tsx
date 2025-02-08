@@ -87,6 +87,7 @@ const Order: FC<Props> = (props: Props) => {
             <div>
               <CreateOrder
                 setAdded={setAdded}
+                refetch={refetch}
               />
             </div>
           )}

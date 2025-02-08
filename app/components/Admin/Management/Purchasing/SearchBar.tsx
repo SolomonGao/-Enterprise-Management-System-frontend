@@ -29,7 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   const handleReset = () => {
-    setSelectedColumn("customer");
+    setSelectedColumn("authorizer");
     setSearchTerm("");
   };
 
