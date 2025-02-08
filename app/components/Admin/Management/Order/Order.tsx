@@ -5,6 +5,7 @@ import OrderHero from './OrderHero';
 import CreateOrder from './CreateOrder';
 import { useGetOrdersQuery } from '@/redux/features/order/orderApi';
 import toast from 'react-hot-toast';
+import EditOrder from "./EditOrder";
 
 type Props = {
   user: any;
@@ -62,7 +63,8 @@ const Order: FC<Props> = (props: Props) => {
               items: [
                 { id: 1, label: '主页' },
                 { id: 2, label: '添加' },
-                { id: 3, label: '监控' },
+                { id: 3, label: '修改' },
+                { id: 4, label: '监控' },
               ]
             }}
           />
@@ -87,6 +89,20 @@ const Order: FC<Props> = (props: Props) => {
             <div>
               <CreateOrder
                 setAdded={setAdded}
+                refetch={refetch}
+              />
+            </div>
+          )}
+
+          {active === 3 && (
+            <div>
+              <EditOrder
+                user={props.user}
+                filteredData={filteredData}
+                setFilters={setFilters}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                isFetching={isFetching}
                 refetch={refetch}
               />
             </div>
