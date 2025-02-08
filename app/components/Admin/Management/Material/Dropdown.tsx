@@ -42,11 +42,10 @@ const Dropdown: React.FC<DropdownProps> = ({ options, value, onChange, disableAl
         }}
       >
         {/* 添加"全部"选项 */}
-        {disableAll === false && (
           <MenuItem key="all" value="">
             全部
           </MenuItem>
-        )}
+
 
         {options.map((option) => (
           <MenuItem key={option.idroot_material} value={option.idroot_material}>
