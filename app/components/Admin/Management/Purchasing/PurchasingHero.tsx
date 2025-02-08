@@ -1,6 +1,8 @@
 import { debounce } from 'lodash';
 import React, { FC, useCallback } from 'react'
 import SearchBar from './SearchBar';
+import PurchasingTable from './PurchasingTable'
+import Pagination from '@/app/components/Pagination/Pagination';
 
 type Props = {
     filteredData: any;
@@ -48,6 +50,21 @@ const PurchasingHero: FC<Props> = ({
                 <div className="w-full p-5">
                     <SearchBar onSearch={handleFilters} />
                 </div>
+
+                <div className="mt-5">
+                    <PurchasingTable user={user} purchasings={filteredData?.data || []} refetch={refetch} />
+                </div>
+
+                {/* 分页组件 */}
+                {filteredData?.totalPages > 0 && (
+                    <div className="mt-5">
+                        <Pagination
+                            totalPages={filteredData.totalPages}
+                            currentPage={currentPage}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     )

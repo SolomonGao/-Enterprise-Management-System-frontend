@@ -50,4 +50,22 @@ export interface ErrorResponse {
     data?: { message: string };
     message?: string;
   }
+
+  export type PurchasingMaterial = {
+    name: string;
+    drawing_no_id: string;
+    purchasedQuantity: number;
+}
+
+  export type Purchasing = {
+    _id: string;
+    authorizer: string;
+    operator: string;
+    status: string;
+    orderDeadline: string;
+    createdAt: string;
+    updatedAt: string;
+    material: PurchasingMaterial;
+    __v: number;
+};
   

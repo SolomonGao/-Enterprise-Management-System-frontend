@@ -55,6 +55,22 @@ const OrderTable: FC<Props> = ({ orders, refetch, user }) => {
   }, [selectedProduct, succPurchase]);
 
 
+  useEffect(() => {
+    if (succPurchase) {
+      toast.success("添加成功")
+    } 
+  }, [succPurchase])
+
+  useEffect(() => {
+    if (errorPurchase) {
+      if ("data" in errorPurchase) {
+        const errorPurchaseData = errorPurchase as any;
+        toast.error(errorPurchaseData.data.message);
+      } else {
+        console.log("An error occured: ", errorPurchase);
+      }
+    }
+  })
   // useEffect(() => {
   //   if (succUse) {
   //     getMaterialRefetch()
@@ -65,8 +81,8 @@ const OrderTable: FC<Props> = ({ orders, refetch, user }) => {
   const handlePurchasingMaterial = async (id: string, number: number, version: number, orderDeadline: number) => {
     try {
       const response = await purchasingMaterial({ id, number, version, orderDeadline });
-    } catch (err) {
-      console.error('Error handle purchasing material', err);
+    } catch (err: any) {
+      toast.error(err.message);
     }
 
   }
@@ -82,8 +98,8 @@ const OrderTable: FC<Props> = ({ orders, refetch, user }) => {
       const response = await triggerGetMaterials({ materials: order.requiredMaterials });
       setMaterials(response.data.data);
       setIsModalOpen(true);
-    } catch (err) {
-      console.error('Error fetching materials:', err);
+    } catch (err: any) {
+      toast.error(err.message)
     }
   };
 

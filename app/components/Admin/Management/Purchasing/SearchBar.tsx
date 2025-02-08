@@ -20,7 +20,7 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const { theme } = useTheme();
-  const [selectedColumn, setSelectedColumn] = useState("customer");
+  const [selectedColumn, setSelectedColumn] = useState("authorizer");
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
