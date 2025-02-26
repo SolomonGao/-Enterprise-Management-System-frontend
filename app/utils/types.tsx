@@ -87,4 +87,10 @@ export interface ErrorResponse {
     material: PurchasingMaterial;
     __v: number;
 };
+
+export type UsedMaterial = {
+    id: string;
+    quantity: number;
+    drawing_no_id: string;
+};
   
