@@ -17,14 +17,14 @@ type UsedMaterials = {
 };
 
 type Props = {
-    materials: Material[];
+    materials: any[];
     selectedMaterialsId: UsedMaterials[];
     setSelectedMaterialsId: (selectedMaterialsId: UsedMaterials[] | ((prev: UsedMaterials[]) => UsedMaterials[])) => void;
+    setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>;
+    selectedImage: string | null;
 };
 
-const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, setSelectedMaterialsId }) => {
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
+const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, setSelectedMaterialsId, setSelectedImage, selectedImage }) => {
     // 图片模态框
     const openImageModal = (imageUrl: string) => {
         setSelectedImage(imageUrl);

@@ -11,6 +11,7 @@ import { DataItem } from '@/app/utils/types'
 type UsedMaterial = {
     id: string;
     quantity: number;
+    drawing_no_id: string;
 };
 
 type Props = {
