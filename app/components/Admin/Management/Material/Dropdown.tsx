@@ -20,13 +20,13 @@ const Dropdown: React.FC<DropdownProps> = ({ options, value, onChange, disableAl
   return (
     <FormControl fullWidth sx={{ mb: 2 }} variant="outlined">
       <InputLabel id="dropdown-label" sx={{ color: theme === 'dark' ? 'white' : 'black' }}>
-        原料分类
+        零件分类
       </InputLabel>
       <Select
         labelId="dropdown-label"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        label="原料分类"
+        label="零件分类"
         sx={{
           backgroundColor: theme === 'dark' ? '#1F2937' : 'white',
           color: theme === 'dark' ? 'white' : 'black',

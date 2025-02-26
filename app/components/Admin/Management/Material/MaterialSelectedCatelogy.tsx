@@ -1,60 +1,66 @@
 import { style } from '@/app/styles/style';
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import ImageModal from '../../ImageModal';
-
+import toast from 'react-hot-toast';
 
 type Material = {
-    model_name: string;
+    drawing_no_id: string;
     name: string;
-    row_materials: string;
-    comments: string;
-    counts: number;
     specification: string;
-    drawing_no_id: string; // 主键
-    root_materials_idroot_materials: number;
-    drawing_no_secure_url: string; // Base64 编码的图片或文件
+    drawing_no_secure_url: string;
 };
 
-type UsedMaterial = {
+type UsedMaterials = {
     id: string;
     quantity: number;
+    drawing_no_id: string;
 };
 
 type Props = {
     materials: Material[];
-    selectedMaterialsId: UsedMaterial[];
-    setSelectedMaterialsId: (selectedMaterialsId: UsedMaterial[] | ((prev: UsedMaterial[]) => UsedMaterial[])) => void;
-    setSelectedImage: (selectedImage: string | null) => void;
-    selectedImage: string | null;
-}
+    selectedMaterialsId: UsedMaterials[];
+    setSelectedMaterialsId: (selectedMaterialsId: UsedMaterials[] | ((prev: UsedMaterials[]) => UsedMaterials[])) => void;
+};
 
-const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, setSelectedMaterialsId, setSelectedImage, selectedImage }) => {
+const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, setSelectedMaterialsId }) => {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-      // 图片模态框
-  const openImageModal = (imageUrl: string) => {
-    setSelectedImage(imageUrl);
-  };
+    // 图片模态框
+    const openImageModal = (imageUrl: string) => {
+        setSelectedImage(imageUrl);
+    };
 
-    const handleCheckboxChange = (id: string, checked: boolean) => {
-        setSelectedMaterialsId((prev: UsedMaterial[]) => {
+    const handleCheckboxChange = (material: Material, checked: boolean) => {
+        setSelectedMaterialsId((prev: UsedMaterials[]) => {
             if (checked) {
-                const newSelected = prev.find((item) => item.id === id);
+                const newSelected = prev.find((item) => item.id === material.drawing_no_id);
                 if (newSelected) {
                     return prev;
                 }
-                return [...prev, { id, quantity: 1 }];
+                return [...prev, { 
+                    id: material.drawing_no_id, 
+                    quantity: 1, 
+                    drawing_no_id: material.drawing_no_id 
+                }];
             } else {
-                return prev.filter((item) => item.id !== id);
+                return prev.filter((item) => item.id !== material.drawing_no_id);
             }
         });
+        toast.success(`${checked ? '添加' : '移除'}零件成功`);
     };
 
     const handleQuantityChange = (id: string, quantity: number) => {
+        if (quantity < 1) {
+            toast.error('数量必须大于0');
+            return;
+        }
+
         setSelectedMaterialsId((prev) =>
             prev.map((item) =>
                 item.id === id ? { ...item, quantity } : item
             )
         );
+        toast.success('数量更新成功');
     };
 
     return (
@@ -63,11 +69,9 @@ const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, s
                 <thead>
                     <tr className="bg-blue-300 dark:bg-gray-700">
                         <th className={style.tableHead}>选择</th>
-                        <th className={style.tableHead}>零配件型号</th>
-                        <th className={style.tableHead}>零配件名称</th>
-                        <th className={style.tableHead}>所属产品</th>
+                        <th className={style.tableHead}>零件名称</th>
+                        <th className={style.tableHead}>图号ID</th>
                         <th className={style.tableHead}>规格</th>
-                        <th className={style.tableHead}>仓库</th>
                         <th className={style.tableHead}>数量</th>
                         <th className={style.tableHead}>图纸</th>
                     </tr>
@@ -81,19 +85,18 @@ const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, s
                                     <input
                                         type="checkbox"
                                         checked={!!selectedItem}
-                                        onChange={(e) => handleCheckboxChange(material.drawing_no_id, e.target.checked)}
+                                        onChange={(e) => handleCheckboxChange(material, e.target.checked)}
+                                        className="w-4 h-4 cursor-pointer"
                                     />
                                 </td>
-                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.drawing_no_id}</td>
                                 <td className="border border-black dark:border-white px-4 py-2 text-center">{material.name}</td>
-                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.model_name}</td>
+                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.drawing_no_id}</td>
                                 <td className="border border-black dark:border-white px-4 py-2 text-center">{material.specification}</td>
-                                <td className="border border-black dark:border-white px-4 py-2 text-center">{material.counts}</td>
                                 <td className="border border-black dark:border-white px-4 py-2 text-center">
                                     {selectedItem ? (
                                         <input
                                             type="number"
-                                            min="0"
+                                            min="1"
                                             inputMode="numeric"
                                             step="1"
                                             placeholder="数量"
@@ -101,26 +104,28 @@ const MaterialSelectedCatelogy: FC<Props> = ({ materials, selectedMaterialsId, s
                                             onChange={(e) =>
                                                 handleQuantityChange(material.drawing_no_id, Number(e.target.value))
                                             }
-                                            className="w-16 bg-white dark:bg-gray-800 appearance-none text-center"
-                                            style={{ WebkitAppearance: 'none', MozAppearance: 'none' }} // 移除输入框默认上下箭头
+                                            className="w-16 bg-white dark:bg-gray-800 appearance-none text-center border rounded px-2 py-1"
                                         />
                                     ) : (
                                         "-"
                                     )}
                                 </td>
                                 <td
-                                    className="border border-black dark:border-white px-4 py-2 text-center cursor-pointer"
-                                    onClick={() => openImageModal(material.drawing_no_secure_url)}
+                                    className="px-4 py-2 text-center cursor-pointer hover:text-blue-500"
+                                    onClick={() => material.drawing_no_secure_url && openImageModal(material.drawing_no_secure_url)}
                                 >
-                                    {material.drawing_no_secure_url ? "查看图纸" : "/"}</td>
+                                    {material.drawing_no_secure_url ? "查看图纸" : "/"}
+                                </td>
                             </tr>
                         );
                     })}
                 </tbody>
             </table>
+
+            {/* 图片模态框 */}
             <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />
         </div>
-    )
-}
+    );
+};
 
-export default MaterialSelectedCatelogy
+export default MaterialSelectedCatelogy;

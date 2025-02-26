@@ -34,6 +34,10 @@ const Material = (props: Props) => {
     category: selectedCategory,
     terms: filters,
     page: currentPage,
+  }, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true
   });
 
   const [materials, setMaterials] = useState<any[]>([]);  // 用来管理原料数据

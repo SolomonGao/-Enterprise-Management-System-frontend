@@ -4,9 +4,11 @@ import React, { FC, useState } from 'react'
 
 type Props = {
     orderInfo: any;
-    setorderInfo: (orderInfo: any) => void;
+    setOrderInfo: (orderInfo: any) => void;
     active: number;
     setActive: (active: number) => void;
+    preButton: () => void;
+    nextButton: () => void;
 };
 
 const OrderInfomation: FC<Props> = (props: Props) => {
@@ -40,7 +42,7 @@ const OrderInfomation: FC<Props> = (props: Props) => {
                         required
                         value={props.orderInfo.customer}
                         onChange={(e) =>
-                            props.setorderInfo({ ...props.orderInfo, customer: e.target.value })
+                            props.setOrderInfo({ ...props.orderInfo, customer: e.target.value })
                         }
                         id='name'
                         placeholder='客户名称'
@@ -64,7 +66,7 @@ const OrderInfomation: FC<Props> = (props: Props) => {
                         required
                         value={props.orderInfo.phoneNumber}
                         onChange={(e) =>
-                            props.setorderInfo({ ...props.orderInfo, phoneNumber: e.target.value })
+                            props.setOrderInfo({ ...props.orderInfo, phoneNumber: e.target.value })
                         }
                         id='phoneNumber'
                         placeholder='联系号码'
@@ -88,7 +90,7 @@ const OrderInfomation: FC<Props> = (props: Props) => {
                         required
                         value={props.orderInfo.address}
                         onChange={(e) =>
-                            props.setorderInfo({ ...props.orderInfo, address: e.target.value })
+                            props.setOrderInfo({ ...props.orderInfo, address: e.target.value })
                         }
                         id='address'
                         placeholder='地址'
@@ -111,10 +113,32 @@ const OrderInfomation: FC<Props> = (props: Props) => {
                         name=""
                         value={props.orderInfo.comments}
                         onChange={(e) =>
-                            props.setorderInfo({ ...props.orderInfo, comments: e.target.value })
+                            props.setOrderInfo({ ...props.orderInfo, comments: e.target.value })
                         }
                         id='comments'
                         placeholder='备注'
+                        className={`
+                        ${style.input}`}
+                    />
+                </div>
+                <div className='mb-2'>
+                    <label htmlFor="" className={`${style.label}`}>
+                        订单单价
+                    </label>
+                    <input
+                        type="price"
+                        name=""
+                        value={props.orderInfo.price}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // 允许数字和小数点
+                            if (/^\d*\.?\d*$/.test(value)) {
+                                props.setOrderInfo({ ...props.orderInfo, price: value });
+                                }
+                            }
+                        }
+                        id='price'
+                        placeholder='订单单价'
                         className={`
                         ${style.input}`}
                     />
@@ -129,7 +153,7 @@ const OrderInfomation: FC<Props> = (props: Props) => {
                         required
                         value={props.orderInfo.deadline} // 确保值是一个 ISO 格式的日期字符串（例如 "2024-12-31"）
                         onChange={(e) =>
-                            props.setorderInfo({ ...props.orderInfo, deadline: e.target.value })
+                            props.setOrderInfo({ ...props.orderInfo, deadline: e.target.value })
                         }
                         id="deadline"
                         min={today}
@@ -141,11 +165,19 @@ const OrderInfomation: FC<Props> = (props: Props) => {
                         }
                     />
                 </div>
-                <div className='w-full flex items-center justify-end'>
-                    <input
-                        type='submit'
-                        value="下一步"
-                        className='w-full 800px:w-[180px] h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 cursor-pointer' />
+                <div className='w-full flex-col 800px:flex-row flex items-center justify-between'>
+                    <div
+                        className='w-full 800px:w-[180px] h-[40px] bg-[#37a39a] flex items-center justify-center text-center text-[#fff] rounded mt-8 cursor-pointer'
+                        onClick={() => props.preButton()}
+                    >
+                        上一步
+                    </div>
+                    <div
+                        className='w-full 800px:w-[180px] h-[40px] bg-[#37a39a] flex items-center justify-center text-center text-[#fff] rounded mt-8 cursor-pointer'
+                        onClick={() => props.nextButton()}
+                    >
+                        下一步
+                    </div>
                 </div>
 
                 {/* <div className='mb-5'>

@@ -13,9 +13,12 @@ export const orderApi = apiSlice.injectEndpoints({
         getOrders: builder.query({
             query: ({page = 1, terms: {searchBy, search}}) => {
                 const params = new URLSearchParams();
-                if (search) {
+                if (searchBy === '_id') {
+                    params.append('exactId', search);  // 使用不同的参数名来区分
+                } else if (search) {
                     params.append('search', search);
                 }
+
                 params.append('searchBy', searchBy);
                 params.append('page', String(page));
                 return {
@@ -29,7 +32,11 @@ export const orderApi = apiSlice.injectEndpoints({
             query: ({orderId, newStatus, version}) => ({
                 url: '/order/change-status',
                 method: 'PUT',
-                body: {orderId, newStatus, version},
+                body: {
+                    orderId,
+                    newStatus,
+                    version
+                },
                 credentials: "include" as const,
             })
         }),
@@ -52,7 +59,29 @@ export const orderApi = apiSlice.injectEndpoints({
                 body: { materials },
                 credentials: 'include' as const,
             })
-        })
+        }),
+        updateOrder: builder.mutation({
+            query: ({orderId, orderInfo, version}) => ({
+                url: '/order/update-order',
+                method: 'PUT',
+                body: {
+                    orderId,
+                    orderInfo,
+                    version
+                },
+                credentials: "include" as const,
+            }),
+        }),
+        restoreInventory: builder.mutation({
+            query: ({orderId}) => ({
+                url: '/order/restore-inventory',
+                method: 'POST',
+                body: { 
+                    orderId,
+                },
+                credentials: "include" as const,
+            })
+        }),
     }),
 });
 
@@ -60,8 +89,9 @@ export const {
     useAddOrderMutation,
     useGetOrdersQuery,
     useChangeStatusMutation,
+    useUpdateOrderMutation,
     useGetRequiredMaterialsQuery,
     useLazyGetRequiredMaterialsQuery,
     useUpdateRequiredMaterialsMutation,
-    
+    useRestoreInventoryMutation
 } = orderApi;

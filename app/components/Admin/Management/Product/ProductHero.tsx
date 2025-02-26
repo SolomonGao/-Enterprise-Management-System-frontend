@@ -76,10 +76,15 @@ const ProductHero: React.FC<Props> = ({
                     </div>
                 )}
             </div>
-            {isFetching && (<div className="fixed dark:text-white text-black top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <Typography variant="h6" className='dark:text-white text-black'>
-                    加载中...
-                </Typography> </div>)}
+            {isFetching && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <Typography variant="h6" className="text-gray-800 dark:text-white">
+                            加载中...
+                        </Typography>
+                    </div>
+                </div>
+            )}
         </div>
 
     );

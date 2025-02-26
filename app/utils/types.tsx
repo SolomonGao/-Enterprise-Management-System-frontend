@@ -16,6 +16,39 @@ export type Material = {
     drawing_no_id: string;
     requiredQuantity: number;
 }
+export interface Order {
+  _id: string;
+  customer: string;
+  phoneNumber: string;
+  address: string;
+  deadline: string;
+  comments: string;
+  createdAt: string;
+  products: any[];
+  materials: any[];
+  status: string;
+  version: number;
+  price: number;
+  requiredMaterials: any[];
+  __v: number;
+}
+
+export type LogAction = 'CREATE' | 'UPDATE' | 'DELETE' | 'READ';
+export type LogTargetType = 'ORDER' | 'PRODUCT' | 'MATERIAL' | 'PURCHASING' | 'USER';
+
+export interface LogEntry {
+  _id: string;
+  userId: string;
+  username: string;
+  role: string;
+  action: LogAction;
+  targetType: LogTargetType;
+  targetId: string;
+  details: string;
+  oldData?: any;
+  newData?: any;
+  createdAt: string;
+} 
 
 export type MaterialFull = {
     model_name: string;
@@ -31,20 +64,6 @@ export type MaterialFull = {
     [key: string]: any;
   };
 
-export type Order = {
-    _id: string;
-    customer: string;
-    phoneNumber: string;
-    address: string;
-    status: string;
-    deadline: string;
-    products: Product[];
-    comments: string;
-    createdAt: string;
-    updatedAt: string;
-    requiredMaterials: Material[];
-    __v: number;
-};
 
 export interface ErrorResponse {
     data?: { message: string };

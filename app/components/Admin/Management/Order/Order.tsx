@@ -25,7 +25,11 @@ const Order: FC<Props> = (props: Props) => {
   const { data: filteredData, isLoading, error, refetch, isLoading: isFetching } = useGetOrdersQuery({
     page: currentPage,
     terms: filters,
-    limit: 5,
+    limit: 10,
+  }, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true
   });
 
   useEffect(() => {
@@ -45,12 +49,7 @@ const Order: FC<Props> = (props: Props) => {
       setAdded(false);
       refetch();
     }
-
-
-    return () => {
-
-    }
-  }, [refetch])
+  }, [refetch, added])
 
   return (
     <div>

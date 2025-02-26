@@ -2,9 +2,27 @@
 import React, { useEffect, useState } from 'react';
 import { Product, Order } from '../../../../../utils/types';
 
+interface OrderRowData extends Omit<Order, '_id' | 'customer' | 'comments' | 'address' | 'deadline' | 'createdAt' | 'price'> {
+  _id: React.ReactNode;
+  customer: React.ReactNode;
+  comments: React.ReactNode;
+  address: React.ReactNode;
+  deadline: React.ReactNode;
+  createdAt: React.ReactNode;
+  price: React.ReactNode;
+  _raw: {
+    _id: string;
+    deadline: string;
+    createdAt: string;
+    customer: string;
+    comments: string;
+    address: string;
+    price: number;
+  };
+}
 
-type Props = {
-  order: Order;
+interface OrderRowProps {
+  order: OrderRowData;
   onToggleExpanded: (orderId: string) => void;
   onViewProductDetails: (product: Product) => void;
   isExpanded: boolean;
@@ -15,9 +33,9 @@ type Props = {
   handleGetMaterials: (order: Order) => void;
   isLoading: boolean;
   showCompleted: boolean;
-};
+}
 
-const OrderRow: React.FC<Props> = ({
+const OrderRow: React.FC<OrderRowProps> = ({
   order,
   onToggleExpanded,
   onViewProductDetails,
@@ -31,7 +49,7 @@ const OrderRow: React.FC<Props> = ({
   showCompleted,
 }) => {
 
-  const remainingDays = calculateRemainingDays(order.deadline);
+  const remainingDays = calculateRemainingDays(order._raw.deadline);
 
   const [isDone, setIsDone] = useState(order.status === '已完成'); // 初始化状态
   const [showConfirm, setShowConfirm] = useState(false); // 控制模态框显示
@@ -41,7 +59,7 @@ const OrderRow: React.FC<Props> = ({
   }, [order.status]);
 
   const handleConfirm = () => {
-    handleStatusChange(order._id, "已完成", order.__v); // 调用状态更新函数
+    handleStatusChange(order._raw._id, "已完成", order.__v); // 调用状态更新函数
     setShowConfirm(false); // 隐藏模态框
   };
 
@@ -68,12 +86,23 @@ const OrderRow: React.FC<Props> = ({
 
   return (
     <>
-      <tr key={order._id} className="border-t border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">{order.customer}</td>
-        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">{order.phoneNumber}</td>
-        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">{order.address}</td>
+      <tr className="border-t hover:bg-gray-50 dark:hover:bg-gray-700">
+        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 hidden md:table-cell">
+          {order._id}
+        </td>
+        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 hidden md:table-cell">
+          {order.customer}
+        </td>
+        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 hidden md:table-cell">
+          {order.phoneNumber}
+        </td>
+        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 hidden md:table-cell">
+          {order.address}
+        </td>
         <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">{order.deadline}</td>
-        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">{new Date(order.createdAt).toLocaleString()}</td>
+        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">{order.comments}</td>
+        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">{new Date(order._raw.createdAt).toLocaleString()}</td>
+        <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium hidden md:table-cell">{order.price}</td>
         <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">
           {order.products.length > 0 ? (
             <div>
@@ -88,7 +117,7 @@ const OrderRow: React.FC<Props> = ({
                 </div>
               ) : (
                 <button
-                  onClick={() => onToggleExpanded(order._id)}
+                  onClick={() => onToggleExpanded(order._raw._id)}
                   className={`ml-2 text-blue-500 text-sm font-semi transition-all duration-300 ease-in-out transform inline-flex items-center gap-1 p-1 hover:text-blue-700`}
                 >
                   {isExpanded ? (
@@ -152,7 +181,17 @@ const OrderRow: React.FC<Props> = ({
               </button>
           ) : (
             <button
-              onClick={() => { handleGetMaterials(order) }}
+              onClick={() => { 
+                handleGetMaterials({
+                  ...order,
+                  customer: order._raw.customer || '',
+                  comments: order._raw.comments || '',
+                  address: order._raw.address || '',
+                  deadline: order._raw.deadline,
+                  createdAt: order._raw.createdAt,
+                  price: order._raw.price || 0
+                } as Order)
+              }}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300"
               disabled={isLoading}
             >
@@ -163,7 +202,7 @@ const OrderRow: React.FC<Props> = ({
         <td className="px-4 py-2 text-gray-800 dark:text-gray-300 font-medium">
           <select
             value={order.status}
-            onChange={(e) => handleStatusChange(order._id, e.target.value, order.__v)}
+            onChange={(e) => handleStatusChange(order._raw._id, e.target.value, order.__v)}
             disabled={isUpdating}
             className={`px-4 py-2 border border-gray-600 dark:border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-300 dark:hover:bg-gray-900`}
           >

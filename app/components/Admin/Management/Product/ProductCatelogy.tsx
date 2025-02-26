@@ -83,53 +83,45 @@ const ProductCatalog: React.FC<Props> = ({ products }) => {
         {products.map((product) => (
           <div
             key={product.idproduct}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 flex flex-col"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col transition-all hover:shadow-xl"
           >
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-semibold text-gray-900 dark:text-white">
-                ID: {product.idproduct} 名称：{product.model_name}
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {product.model_name}
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  ID: {product.idproduct}
+                </p>
               </div>
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => toggleExpand(product.idproduct)}
-                  className="text-blue-600 dark:text-blue-400 md:hidden"
-                >
-                  {expandedIds.includes(product.idproduct) ? "收起" : "展开"}
-                </button>
-              </div>
+              <button
+                onClick={() => viewProductDetails(product)}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                查看详情
+              </button>
             </div>
 
-            <div
-              className={`mt-4 space-y-2 ${expandedIds.includes(product.idproduct) || "md:block hidden"
-                }`}
-            >
-              <div className="text-gray-700 dark:text-gray-300">
-                <div className="flex justify-between items-center">
-                  <p>泵型号: {product.pump_model}</p>
-                  <button
-                    onClick={() => viewProductDetails(product)}
-                    className="text-white bg-blue-500 hover:bg-blue-600 p-2 rounded-full focus:outline-none"
-                  >
-                    查看详情
-                  </button>
-                </div>
-                <p className="mb-2">制造商: {product.manufacturer}</p>
-                <p>图号ID: {product.drawing_no_id}</p>
-              </div>
-              {product.drawing_no_secure_url && (
-                <div
-                  className="relative w-full h-48 mt-2 rounded-md overflow-hidden cursor-pointer"
-                  onClick={() => openImageModal(product.drawing_no_secure_url)}
-                >
-                  <Image
-                    src={product.drawing_no_secure_url}
-                    alt={`${product.model_name} 图纸`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
+            <div className="space-y-2 text-gray-700 dark:text-gray-300">
+              <p>泵型号: {product.pump_model}</p>
+              <p>制造商: {product.manufacturer}</p>
+              <p>图号ID: {product.drawing_no_id}</p>
             </div>
+
+            {product.drawing_no_secure_url && (
+              <div
+                onClick={() => openImageModal(product.drawing_no_secure_url)}
+                className="mt-4 relative w-full h-48 rounded-lg overflow-hidden cursor-pointer group"
+              >
+                <Image
+                  src={product.drawing_no_secure_url}
+                  alt={`${product.model_name} 图纸`}
+                  fill
+                  className="object-cover transition-transform group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity" />
+              </div>
+            )}
           </div>
         ))}
       </div>

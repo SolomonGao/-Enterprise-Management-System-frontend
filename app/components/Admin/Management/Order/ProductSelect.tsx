@@ -9,6 +9,7 @@ import Pagination from "../../../Pagination/Pagination";
 type UsedProducts = {
     id: string;
     quantity: number;
+    drawing_no_id: string;
 };
 
 type Props = {

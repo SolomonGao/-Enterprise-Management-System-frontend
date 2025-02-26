@@ -3,7 +3,7 @@ import SearchBar from "@/app/components/Admin/Management/Material/SearchBar";
 import Dropdown from "@/app/components/Admin/Management/Material/Dropdown";
 import MaterialCatelogy from "./MaterialCatelogy";
 import Pagination from "../../../Pagination/Pagination";
-import { Typography } from "@mui/material";
+import { Typography, CircularProgress } from "@mui/material";
 import { debounce } from "lodash";
 
 interface DataItem {
@@ -94,12 +94,13 @@ const MaterialHero: React.FC<MaterialHeroProps> = ({
         </div>
       )}
 
-      {/* 加载中提示 */}
+      {/* 改进加载状态显示 */}
       {isFetching && (
-        <div className="fixed dark:text-white text-black top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Typography variant="h6" className="dark:text-white text-black">
-            加载中...
-          </Typography>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg flex flex-col items-center">
+            <CircularProgress />
+            <span className="mt-2 text-gray-700 dark:text-gray-200">加载中...</span>
+          </div>
         </div>
       )}
     </div>

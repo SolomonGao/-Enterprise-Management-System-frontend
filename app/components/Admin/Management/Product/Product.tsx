@@ -22,6 +22,10 @@ const Product = (props: Props) => {
         page: currentPage,
         terms: filters,
         limit: 10,
+    }, {
+        refetchOnMountOrArgChange: true,
+        refetchOnFocus: true,
+        refetchOnReconnect: true
     });
 
     useEffect(() => {

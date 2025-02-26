@@ -4,6 +4,8 @@ import PurchasingRow from './PurchasingRow';
 import { useFinishPurchasingMaterialMutation, useStartPurchasingMaterialMutation } from '@/redux/features/pruchasing/purchasingApi';
 import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
+import { useLogger } from '@/hooks/useLogger';
+
 type Props = {
     purchasings: Purchasing[];
     refetch: () => void;
@@ -11,38 +13,77 @@ type Props = {
 };
 
 const PurchasingTable: FC<Props> = ({ purchasings, refetch, user }) => {
+    const [startPurchasingMaterial, { isSuccess, isLoading, error }] = useStartPurchasingMaterialMutation();
+    const [finishPurchasingMaterial, { isSuccess: finishSucc, isLoading: finishIsL, error: finishErr }] = useFinishPurchasingMaterialMutation();
+    const [showCompleted, setShowCompleted] = useState(true);
+    const { logAction } = useLogger();
 
-
-    const [startPurchasingMaterial, { isSuccess, isLoading, error }] = useStartPurchasingMaterialMutation()
-
-    const [finishPurchasingMaterial, { isSuccess: finishSucc, isLoading: finishIsL, error: finishErr }] = useFinishPurchasingMaterialMutation()
-    const [showCompleted, setShowCompleted] = useState(true); // 控制是否显示已完成订单
     const handleToggleShowCompleted = () => {
         setShowCompleted((prev) => !prev);
     };
+
     const handlePurchasing = async (purchasing: Purchasing) => {
         try {
-            const response = await startPurchasingMaterial({
+            await startPurchasingMaterial({
                 _id: purchasing._id,
                 operator: user.name,
                 __v: purchasing.__v
+            }).unwrap();
+
+            await logAction({
+                action: 'UPDATE',
+                targetType: 'PURCHASING',
+                targetId: purchasing._id,
+                details: `开始采购物料: ${purchasing.material.name}`,
+                oldData: { status: purchasing.status },
+                newData: { status: '采购中', operator: user.name }
             });
+
         } catch (err: any) {
+            await logAction({
+                action: 'UPDATE',
+                targetType: 'PURCHASING',
+                targetId: purchasing._id,
+                details: `开始采购失败: ${err.message}`,
+                oldData: purchasing,
+                newData: null
+            });
             toast.error(err.message);
         }
     }
 
     const handleFinishPurchasing = async (purchasing: Purchasing) => {
         try {
-            const response = await finishPurchasingMaterial({
+            await finishPurchasingMaterial({
                 _id: purchasing._id,
                 operator: user.name,
                 drawing_no_id: purchasing.material.drawing_no_id,
                 purchasedQuantity: purchasing.material.purchasedQuantity,
                 __v: purchasing.__v,
+            }).unwrap();
 
+            await logAction({
+                action: 'UPDATE',
+                targetType: 'PURCHASING',
+                targetId: purchasing._id,
+                details: `完成采购物料: ${purchasing.material.name}, 数量: ${purchasing.material.purchasedQuantity}`,
+                oldData: { status: purchasing.status },
+                newData: { 
+                    status: '已完成', 
+                    operator: user.name,
+                    purchasedQuantity: purchasing.material.purchasedQuantity 
+                }
             });
+
         } catch (err: any) {
+            await logAction({
+                action: 'UPDATE',
+                targetType: 'PURCHASING',
+                targetId: purchasing._id,
+                details: `完成采购失败: ${err.message}`,
+                oldData: purchasing,
+                newData: null
+            });
             toast.error(err.message);
         }
     }
@@ -83,7 +124,6 @@ const PurchasingTable: FC<Props> = ({ purchasings, refetch, user }) => {
         }
     }, [finishErr]);
 
-
     const formatDate = (isoDateString: string) => {
         const date = new Date(isoDateString);
 
@@ -100,7 +140,6 @@ const PurchasingTable: FC<Props> = ({ purchasings, refetch, user }) => {
         // 组合成目标格式
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
-
 
     return (
         <div className="overflow-x-auto">

@@ -8,6 +8,8 @@ import toast from 'react-hot-toast';
 import { useAddMaterialMutation, useAddRootMutation } from '@/redux/features/material/materialApi';
 import Dropdown from './Dropdown';
 import ImageUpload from '@/app/components/ImageUpload';
+import { useLogger } from '@/hooks/useLogger';
+import { CircularProgress } from '@mui/material';
 
 type Material = {
   model_name: string;
@@ -59,10 +61,11 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded, refetch }) => {
   const { theme } = useTheme();
   const [addRoot, { isSuccess, error }] = useAddRootMutation();
   const [addMaterial, { isSuccess: isSuccessLeaf, error: errorLeaf }] = useAddMaterialMutation();
+  const { logAction } = useLogger();
 
   useEffect(() => {
     if (isSuccessLeaf) {
-      toast.success('原料添加成功');
+      toast.success('零件添加成功');
       refetch();
       // 清空所有原料相关字段
       setMaterialDetails({
@@ -105,28 +108,72 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded, refetch }) => {
 
 
   const handleAdd = async () => {
-    setLoading(true); // 设置加载状态
-    if (operation === 'category') {
-      await addRoot(materialName);
-    } else {
+    setLoading(true);
+    try {
+      if (operation === 'category') {
+        await addRoot(materialName).unwrap();
+        
+        // 添加分类操作日志
+        await logAction({
+          action: 'CREATE',
+          targetType: 'MATERIAL',
+          targetId: 'new_category',
+          details: `创建新物料分类: ${materialName}`,
+          oldData: null,
+          newData: { categoryName: materialName }
+        });
+        
+      } else {
+        if (selectedCategory === "") {
+          toast.error('必须选择一个零件类型');
+          setLoading(false);
+          return;
+        }
 
-      if (selectedCategory === "") {
-        toast.error('必须选择一个原料类型');
-        setLoading(false);
-        return
-      }
+        if (!materialDetails.name || !materialDetails.drawing_no_id || Number.isNaN(materialDetails.counts)) {
+          toast.error('名称，型号和数量是必填项');
+          setLoading(false);
+          return;
+        }
 
-      if (!materialDetails.name || !materialDetails.drawing_no_id || Number.isNaN(materialDetails.counts)) {
-        toast.error('名称，型号和数量是必填项');
-        setLoading(false);
-        return;
+        materialDetails.root_materials_idroot_materials = selectedCategory;
+        if (selectedImage) {
+          materialDetails.drawing_no = selectedImage;
+        }
+
+        await addMaterial(materialDetails).unwrap();
+        
+        // 添加零件操作日志
+        await logAction({
+          action: 'CREATE',
+          targetType: 'MATERIAL',
+          targetId: materialDetails.drawing_no_id,
+          details: `创建新零件: ${materialDetails.name}, 型号: ${materialDetails.drawing_no_id}`,
+          oldData: null,
+          newData: materialDetails
+        });
       }
-      materialDetails.root_materials_idroot_materials = selectedCategory;
-      if (selectedImage) {
-        materialDetails.drawing_no = selectedImage;
-      }
-      await addMaterial(materialDetails);
+    } catch (error: unknown) {
+      // 记录错误日志
+      await logAction({
+        action: 'CREATE',
+        targetType: 'MATERIAL',
+        targetId: operation === 'category' ? 'new_category' : materialDetails.drawing_no_id || 'new_material',
+        details: `创建${operation === 'category' ? '分类' : '零件'}失败: ${error instanceof Error ? error.message : '未知错误'}`,
+        oldData: null,
+        newData: operation === 'category' ? { categoryName: materialName } : materialDetails
+      });
+      console.error('Failed to add:', error);
+      toast.error(`添加失败: ${error instanceof Error ? error.message : '未知错误'}`);
     }
+    setLoading(false);
+  };
+
+  // 添加确认对话框
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const handleConfirmAdd = () => {
+    setShowConfirmDialog(true);
   };
 
   return (
@@ -159,7 +206,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded, refetch }) => {
             </IconButton>
 
             <Typography variant="h6" mb={2} color={theme === 'dark' ? 'white' : 'black'}>
-              添加{operation === 'category' ? '分类' : '原料'}
+              添加{operation === 'category' ? '分类' : '零件'}
             </Typography>
 
             {/* 下拉选择操作 */}
@@ -191,7 +238,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded, refetch }) => {
                 }}
               >
                 <MenuItem value="category">添加分类</MenuItem>
-                <MenuItem value="material">添加原料</MenuItem>
+                <MenuItem value="material">添加零件</MenuItem>
               </Select>
             </FormControl>
 
@@ -241,13 +288,13 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded, refetch }) => {
                     type={field === "counts" ? "number" : "text"}  // 对数量输入框添加 type="number"
                     label={
                       field === "drawing_no_id"
-                        ? "型号"
+                        ? "型号（图号）"
                         : field === "name"
                           ? "零配件名称"
                           : field === "counts"
                             ? "数量"
                             : field === "model_name"
-                              ? "产品名称"
+                              ? "所属产品名称"
                               : field === "row_material"
                                 ? "材料类型"
                                 : field === "specification"
@@ -289,7 +336,7 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded, refetch }) => {
             <Button
               fullWidth
               variant="contained"
-              onClick={handleAdd}
+              onClick={handleConfirmAdd}
               sx={{ mt: 2 }}
             >
               添加
@@ -297,17 +344,48 @@ const AddRootMaterial: React.FC<Props> = ({ options, setAdded, refetch }) => {
           </Box>
         </div>
       )}
-      <div>
-        {loading && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <Typography variant="h6" className='dark:text-white text-black'>
-              正在添加，请稍候...
-            </Typography>
+      {loading && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg flex flex-col items-center">
+            <CircularProgress />
+            <span className="mt-2 text-gray-700 dark:text-gray-200">
+              {operation === 'category' ? '正在添加分类...' : '正在添加零件...'}
+            </span>
           </div>
-        )}
+        </div>
+      )}
 
-      </div>
-    </div >
+      {/* 确认对话框 */}
+      {showConfirmDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">确认添加？</h3>
+            <p>
+              {operation === 'category' 
+                ? `确定要添加分类 "${materialName}" 吗？`
+                : `确定要添加零件 "${materialDetails.name}" 吗？`}
+            </p>
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                onClick={() => setShowConfirmDialog(false)}
+                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+              >
+                取消
+              </button>
+              <button
+                onClick={() => {
+                  setShowConfirmDialog(false);
+                  handleAdd();
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                确认
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

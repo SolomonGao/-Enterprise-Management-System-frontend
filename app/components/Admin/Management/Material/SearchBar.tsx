@@ -5,9 +5,9 @@ import { TextField, MenuItem, Button, Grid } from "@mui/material";
 import { useTheme } from "next-themes";
 
 const columnOptions = [
-  { label: "所属产品", value: "model_name" },
+  { label: "所属产品名", value: "model_name" },
   { label: "型号(图号)", value: "drawing_no_id" },
-  { label: "名称", value: "name" },
+  { label: "材料名称", value: "name" },
   { label: "备注", value: "comments" },
   { label: "规格", value: "specification" },
   { label: "数量", value: "counts" },

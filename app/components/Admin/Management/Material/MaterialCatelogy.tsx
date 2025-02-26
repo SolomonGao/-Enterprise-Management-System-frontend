@@ -3,6 +3,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { useUpdateMaterialCountsMutation } from "@/redux/features/material/materialApi";
 import ImageModal from "../../ImageModal";
+import { useLogger } from "@/hooks/useLogger";
 
 type Material = {
   model_name: string;
@@ -24,8 +25,11 @@ type Props = {
 const MaterialCatelogy: React.FC<Props> = ({ materials, handleUpdateCounts }) => {
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [editCounts, setEditCounts] = useState<{ [key: string]: string }>({}); // 用于存储临时输入的数量
+  const [editCounts, setEditCounts] = useState<{ [key: string]: string }>({});
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingUpdate, setPendingUpdate] = useState<{id: string, counts: number} | null>(null);
   const [updateCounts] = useUpdateMaterialCountsMutation();
+  const { logAction } = useLogger();
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) =>
@@ -41,27 +45,41 @@ const MaterialCatelogy: React.FC<Props> = ({ materials, handleUpdateCounts }) =>
     setEditCounts((prev) => ({ ...prev, [id]: value }));
   };
 
-
   const handleUpdateCounts1 = async (id: string) => {
     const newCounts = parseInt(editCounts[id], 10);
     if (!isNaN(newCounts) && newCounts >= 0) {
       try {
+        const material = materials.find(m => m.drawing_no_id === id);
         await updateCounts({ id, counts: newCounts }).unwrap();
+        
+        // 添加日志记录
+        await logAction({
+          action: 'UPDATE',
+          targetType: 'MATERIAL',
+          targetId: id,
+          details: `更新物料 ${material?.name} 数量从 ${material?.counts} 到 ${newCounts}`,
+          oldData: { counts: material?.counts },
+          newData: { counts: newCounts }
+        });
+
         handleUpdateCounts(id, newCounts);
         toast.success("数量更新成功！");
-
       } catch (error) {
         toast.error(`更新失败，请重试！, ${error}`);
       }
-      setEditCounts((prev) => ({ ...prev, [id]: "" })); // 清空输入框
+      setEditCounts((prev) => ({ ...prev, [id]: "" }));
     } else {
       toast.error("请输入有效的数量！");
     }
   };
 
+  const confirmUpdate = (id: string, counts: number) => {
+    setPendingUpdate({ id, counts });
+    setShowConfirmDialog(true);
+  };
+
   return (
     <div>
-
       {/* 图片模态框 */}
       <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />
 
@@ -140,7 +158,7 @@ const MaterialCatelogy: React.FC<Props> = ({ materials, handleUpdateCounts }) =>
                   placeholder="输入新的数量"
                 />
                 <button
-                  onClick={() => handleUpdateCounts1(material.drawing_no_id)}
+                  onClick={() => confirmUpdate(material.drawing_no_id, parseInt(editCounts[material.drawing_no_id] || "0", 10))}
                   className="w-full mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                 >
                   更新数量
@@ -150,6 +168,33 @@ const MaterialCatelogy: React.FC<Props> = ({ materials, handleUpdateCounts }) =>
           </div>
         ))}
       </div>
+
+      {/* 添加确认对话框 */}
+      {showConfirmDialog && pendingUpdate && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">确认更新数量？</h3>
+            <p>确定要将数量更新为 {pendingUpdate.counts} 吗？</p>
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                onClick={() => setShowConfirmDialog(false)}
+                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+              >
+                取消
+              </button>
+              <button
+                onClick={() => {
+                  handleUpdateCounts1(pendingUpdate.id);
+                  setShowConfirmDialog(false);
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                确认
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

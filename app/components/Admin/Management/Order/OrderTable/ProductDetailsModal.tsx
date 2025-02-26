@@ -14,7 +14,7 @@ type Props = {
   currentPage: number;
   isProductLoading: boolean;
   user: any
-  handlePurchasingMaterial: (id: string, number: number, version: number, orderDeadline: number) => void;
+  handlePurchasingMaterial: (id: string, number: number, version: number, orderDeadline: number, price: number) => void;
 };
 
 const ProductDetailsModal: React.FC<Props> = ({
@@ -33,10 +33,12 @@ const ProductDetailsModal: React.FC<Props> = ({
   const [orderDeadline, setOrderDeadline] = useState<number | null>(null);
   const [isPurchasing, setIsPurchasing] = useState<boolean>(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
+  const [price, setPrice] = useState<number | null>(null)
 
   // 图片模态框
   const openImageModal = (imageUrl: string) => {
     setSelectedImage(imageUrl);
+    
   };
 
   const handlePageChange = (page: number) => {
@@ -48,20 +50,22 @@ const ProductDetailsModal: React.FC<Props> = ({
     setIsPurchasing(true);
     setPurchaseQuantity(0);
     setOrderDeadline(0);
+    setPrice(0);
   };
 
   const handleSubmitPurchase = async () => {
-    if (purchaseQuantity && selectedMaterial && orderDeadline) {
+    if (purchaseQuantity && selectedMaterial && orderDeadline && price) {
       const materialId = selectedMaterial.leaf_materials_drawing_no; // 获取物料 ID
       const version = selectedMaterial.leafMaterial.version; // 获取物料 ID
       // 调用 handlePurchasingMaterial 函数进行采购
-      await handlePurchasingMaterial(materialId, purchaseQuantity, version, orderDeadline);
+      await handlePurchasingMaterial(materialId, purchaseQuantity, version, orderDeadline, price);
 
   
       // 采购完成后，关闭输入框并清空输入
       setIsPurchasing(false);
       setPurchaseQuantity(0);
       setOrderDeadline(0);
+      setPrice(0);
     } else {
       // 如果没有填写采购数量，提示用户
       toast.error("请填写有效的采购数量和天数");
@@ -170,7 +174,7 @@ const ProductDetailsModal: React.FC<Props> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-1/3">
             <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
-              请输入采购数量
+              请输入采购信息
             </h3>
             <div className="mt-4">
               <input
@@ -178,7 +182,16 @@ const ProductDetailsModal: React.FC<Props> = ({
                 value={purchaseQuantity || ''}
                 onChange={(e) => setPurchaseQuantity(Number(e.target.value))}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 rounded"
-                placeholder="请输入数量"
+                placeholder="请输入采购数量"
+              />
+            </div>
+            <div className="mt-4">
+              <input
+                type="number"
+                value={price || ''}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 rounded"
+                placeholder="请输入采购配件单价（一个的价格）"
               />
             </div>
             <div className="mt-4">
