@@ -37,7 +37,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
     reducer: persistedReducer,
     devTools: process.env.NODE_ENV !== 'production',
-    middleware: (getDefaultMiddleware) => 
+    middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
@@ -58,13 +58,20 @@ export type AppDispatch = typeof store.dispatch;
 // call the resrsh token every page load
 const initializeApp = async () => {
     try {
-        if (!store.getState().auth.token) {
-            await store.dispatch(
+        const hasLoginInfo = typeof window !== 'undefined' ||
+            (document.cookie.includes('refreshToken'));
+        if (hasLoginInfo) {
+            // 先尝试刷新token
+            const refreshResult = await store.dispatch(
                 apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true })
             );
-            await store.dispatch(
-                apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
-            );
+
+            // 如果token刷新成功，再加载用户信息
+            if (refreshResult.data?.accessToken) {
+                await store.dispatch(
+                    apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
+                );
+            }
         }
     } catch (error) {
         console.error("Failed to initialize app:", error);
