@@ -28,9 +28,9 @@ export default async function handler(req: any, res: any) {
         try {
             await transporter.sendMail(mailOptions);
             res.status(200).json({ message: '邮件发送成功' });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: '邮件发送失败' });
+        } catch (error: any) {
+            console.error('邮件发送错误:', error);
+            res.status(500).json({ message: '邮件发送失败', error: error.message });
         }
     } else {
         res.setHeader('Allow', ['POST']);

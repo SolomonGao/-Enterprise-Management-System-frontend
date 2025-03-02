@@ -66,8 +66,8 @@ const Page: FC<Props> = (props) => {
     <div>
       <Heading
       title="成都南方石化密封件有限公司"
-      description="石化密封件，加工，制作，销售，生成"
-      keywords="ERP,仓库，储存，订单咨询，密封件"/>
+      description="石化密封件，加工，制作，销售，生成，机械密封，金属垫片，O圈，油封"
+      keywords="O圈,仓库，储存，订单咨询，密封件，机械密封，金属垫片，油封"/>
 
       <Header
       open={open}

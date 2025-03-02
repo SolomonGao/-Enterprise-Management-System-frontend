@@ -172,7 +172,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
                                 <br />
                                 <br />
                                 <p className='text-[16px] px-2 ml-5 pl-5 text-black dark:text-white'>
-                                    Copyright © 2024 Xing Gao ERP
+                                © 2025 成都南方石化密封件有限公司. 保留所有权利.
                                 </p>
                             </div>
                         </div>
