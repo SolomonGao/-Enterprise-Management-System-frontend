@@ -54,6 +54,9 @@ frontend/
 ├── tailwind.config.ts    # Tailwind setup
 ├── next.config.js        # Next.js configuration
 └── tsconfig.json         # TypeScript configuration
+```
+
+---
 
 ## Getting Started
 
