@@ -33,7 +33,6 @@ It is designed to provide a modern, responsive, and efficient interface for mana
 | **TypeScript**    | Static typing                      |
 | **Tailwind CSS**  | Styling and design system          |
 | **JWT**           | Secure user sessions               |
-| **Google OAuth**  | Third-party login integration      |
 | **React Hook Form** | Form management                 |
 
 ---
